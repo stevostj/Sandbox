@@ -8,4 +8,4 @@ A host application ingests instances of a game engine plugin and interacts with 
 
 TODO: Show Details of IGEP
 
-TODO: Show a Hi-level Sequence for ops
+![](./GameEnginePluginLifecycle.png)

@@ -1,0 +1,29 @@
+@startuml
+
+title "Game Engine Plugin Lifecycle"
+
+participant "Host Application" as HA
+
+HA -> HA: Initialization
+activate HA
+
+create participant "Host Application Interop" as HAI
+HA -> HAI: new
+
+deactivate HA
+
+HAI -> HAI: Load GE Plugin(s)
+activate HAI
+
+create participant "Game Engine Plugin" as GEP
+HAI -> GEP: load into memory
+HAI -> GEP: GEP_Initialize
+activate GEP
+GEP --> HAI: initialization_ok = 0
+deactivate GEP
+
+
+
+
+
+@enduml

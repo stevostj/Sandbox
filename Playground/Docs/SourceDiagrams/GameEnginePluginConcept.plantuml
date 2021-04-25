@@ -1,13 +1,16 @@
 @startuml
 
-[Host Application] as HA
-[Game Engine Plugin] as GEP
+title "Game Engine Plugin Concept"
 
+frame "Host Application" as HA {
+[Host Application Interop] as HAI
+[Game Engine Plugin] as GEP
 () "IGameEnginePlugin" as IGEP
+}
 
 IGEP -- GEP
 
-HA <..> IGEP
+HAI <..> IGEP
 
 
 @enduml
