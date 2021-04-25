@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{c88c77dd-d90b-4822-9e52-ba1040322c5f}</ProjectGuid>
-    <RootNamespace>TestHost</RootNamespace>
+    <ProjectGuid>{755435e2-4d2c-42ab-b87b-447ed2033cf6}</ProjectGuid>
+    <RootNamespace>ExampleGameEnginePluginHost</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>ExampleGameEnginePluginHost</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
