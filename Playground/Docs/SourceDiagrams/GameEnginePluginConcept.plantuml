@@ -1,0 +1,13 @@
+@startuml
+
+[Host Application] as HA
+[Game Engine Plugin] as GEP
+
+() "IGameEnginePlugin" as IGEP
+
+IGEP -- GEP
+
+HA <..> IGEP
+
+
+@enduml
