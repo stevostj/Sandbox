@@ -4,8 +4,8 @@ The basic premise behind the Simple Game Engine Plugin to allow a developer to c
 
 ![](./GameEnginePluginConcept.png)
 
-A host application ingests instances of a game engine plugin and interacts with it via the defined IGameEnginePlugin interfaces. 
+A host application ingests instances of a game engine plugin and interacts with it via the defined IGameEnginePlugin interface functions. 
 
-TODO: Show Details of IGEP
+![](./GameEnginePluginInterface.png)
 
 ![](./GameEnginePluginLifecycle.png)
