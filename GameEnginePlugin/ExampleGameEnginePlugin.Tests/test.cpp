@@ -1,6 +1,7 @@
 #include "pch.h"
+#include "GameEnginePlugin.h"
 
-TEST(TestCaseName, TestName) {
-  EXPECT_EQ(1, 1);
-  EXPECT_TRUE(true);
+TEST(TestInitializeOK_StaticLoad, TestInitialize) {
+  int initialize_rv = Initialize();
+  EXPECT_EQ(initialize_rv, 0);
 }
