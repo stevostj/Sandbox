@@ -1,5 +1,5 @@
 #include "pch.h"
-#include <Windows.h>
+#include <windows.h>
 
 namespace {
 
@@ -8,7 +8,10 @@ namespace {
     class PluginTestFixture : public ::testing::Test {
     protected:
         void SetUp() override {
-            hGetProcIDDLL = ::LoadLibrary((LPCWSTR)".\\ExampleGameEnginePlugin.dll");
+
+            std::wstring libPath = getLibraryPath(L"\\ExampleGameEnginePlugin.dll");
+
+            hGetProcIDDLL = ::LoadLibrary((LPWSTR)libPath.c_str());
             EXPECT_NE(hGetProcIDDLL, (HINSTANCE)0); // library loaded
         }
 
@@ -18,6 +21,22 @@ namespace {
         }
 
         HINSTANCE hGetProcIDDLL;
+
+    private:
+
+        /// <summary>
+        /// Get a full path compatible with Google Test working directory and load library calls.
+        /// </summary>
+        /// <param name="filename">The name of the file to create a full path for. </param>
+        /// <returns>The full compatible file path. </returns>
+        std::wstring getLibraryPath(wchar_t * filename)
+        {
+            wchar_t dirBuffer[256] = {};
+            ::GetCurrentDirectory(256, dirBuffer);
+            std::wstring libPath(dirBuffer);
+            libPath.append(filename);
+            return libPath;
+        }
     };
 
 }
