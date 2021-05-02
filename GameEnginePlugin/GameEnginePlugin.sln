@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExampleGameEnginePlugin", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExampleGameEnginePlugin.Tests", "ExampleGameEnginePlugin.Tests\ExampleGameEnginePlugin.Tests.vcxproj", "{A668B42D-14DA-4EB9-B3B7-AC88EB433831}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hello-World-SDK-3", "GameEnginePlugine.XPlaneWrapper\Hello-World-SDK-3.vcxproj", "{215F578F-D0D0-43D2-BC90-0D573F0A2689}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -45,6 +47,12 @@ Global
 		{A668B42D-14DA-4EB9-B3B7-AC88EB433831}.Release|x64.Build.0 = Release|x64
 		{A668B42D-14DA-4EB9-B3B7-AC88EB433831}.Release|x86.ActiveCfg = Release|Win32
 		{A668B42D-14DA-4EB9-B3B7-AC88EB433831}.Release|x86.Build.0 = Release|Win32
+		{215F578F-D0D0-43D2-BC90-0D573F0A2689}.Debug|x64.ActiveCfg = Debug|x64
+		{215F578F-D0D0-43D2-BC90-0D573F0A2689}.Debug|x64.Build.0 = Debug|x64
+		{215F578F-D0D0-43D2-BC90-0D573F0A2689}.Debug|x86.ActiveCfg = Debug|x64
+		{215F578F-D0D0-43D2-BC90-0D573F0A2689}.Release|x64.ActiveCfg = Release|x64
+		{215F578F-D0D0-43D2-BC90-0D573F0A2689}.Release|x64.Build.0 = Release|x64
+		{215F578F-D0D0-43D2-BC90-0D573F0A2689}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
