@@ -3,15 +3,15 @@
 
 namespace {
 
-    typedef int(__stdcall* Initialize_t)();       // Initialize function signature with calling convention
+    typedef int(__stdcall* InitializeFunc)();       // Initialize function signature with calling convention
 
     class PluginTestFixture : public ::testing::Test {
     protected:
         void SetUp() override {
 
-            std::wstring libPath = getLibraryPath(L"\\ExampleGameEnginePlugin.dll");
+            std::wstring lib_path = getLibraryPath(L"\\ExampleGameEnginePlugin.dll");
 
-            hGetProcIDDLL = ::LoadLibrary((LPWSTR)libPath.c_str());
+            hGetProcIDDLL = ::LoadLibrary((LPWSTR)lib_path.c_str());
             EXPECT_NE(hGetProcIDDLL, (HINSTANCE)0); // library loaded
         }
 
@@ -31,11 +31,11 @@ namespace {
         /// <returns>The full compatible file path. </returns>
         std::wstring getLibraryPath(wchar_t * filename)
         {
-            wchar_t dirBuffer[256] = {};
-            ::GetCurrentDirectory(256, dirBuffer);
-            std::wstring libPath(dirBuffer);
-            libPath.append(filename);
-            return libPath;
+            wchar_t directory_buffer[256] = {};
+            ::GetCurrentDirectory(256, directory_buffer);
+            std::wstring lib_path(directory_buffer);
+            lib_path.append(filename);
+            return lib_path;
         }
     };
 
@@ -44,8 +44,8 @@ namespace {
 TEST_F(PluginTestFixture, TestInitialize) {
 
     // resolve function address here
-    Initialize_t initialize_func = (Initialize_t) ::GetProcAddress(hGetProcIDDLL, "Initialize");
-    EXPECT_NE(initialize_func, (Initialize_t) 0); // Initialize function found
+    InitializeFunc initialize_func = (InitializeFunc) ::GetProcAddress(hGetProcIDDLL, "GEP_Initialize");
+    EXPECT_NE(initialize_func, (InitializeFunc) 0); // Initialize function found
 
     int initialize_rv = initialize_func();
     EXPECT_EQ(initialize_rv, 0); // initialize ok

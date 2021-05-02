@@ -14,7 +14,7 @@ extern "C" {
 
 #define GEP_INITIALIZE_OK = 0
 
-GEP_DECLSPEC int Initialize();
+GEP_DECLSPEC int GEP_Initialize();
 
 #ifdef __cplusplus
 }
