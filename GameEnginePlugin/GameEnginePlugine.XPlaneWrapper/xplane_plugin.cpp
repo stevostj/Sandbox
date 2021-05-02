@@ -1,4 +1,3 @@
-// Downloaded from https://developer.x-plane.com/code-sample/hello-world-sdk-3/
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
@@ -14,9 +13,13 @@
 	#include <GL/gl.h>
 #endif
 
+#include "game_engine_plugin_api.h""
+
+
 #ifndef XPLM300
 	#error This is made to be compiled against the XPLM300 SDK
 #endif
+#include <string>
 
 // An opaque handle to the window we will create
 static XPLMWindowID	g_window;
@@ -27,6 +30,24 @@ int					dummy_mouse_handler(XPLMWindowID in_window_id, int x, int y, int is_down
 XPLMCursorStatus	dummy_cursor_status_handler(XPLMWindowID in_window_id, int x, int y, void * in_refcon) { return xplm_CursorDefault; }
 int					dummy_wheel_handler(XPLMWindowID in_window_id, int x, int y, int wheel, int clicks, void * in_refcon) { return 0; }
 void				dummy_key_handler(XPLMWindowID in_window_id, char key, XPLMKeyFlags flags, char virtual_key, void * in_refcon, int losing_focus) { }
+
+static HINSTANCE hGepHandle;
+
+namespace {
+	/// <summary>
+	/// Get a full path compatible with Google Test working directory and load library calls.
+	/// </summary>
+	/// <param name="filename">The name of the file to create a full path for. </param>
+	/// <returns>The full compatible file path. </returns>
+	std::string getLibraryPath(char* filename)
+	{
+		char directory_buffer[256] = {};
+		::GetCurrentDirectory(256, directory_buffer);
+		std::string lib_path(directory_buffer);
+		lib_path.append(filename);
+		return lib_path;
+	}
+}
 
 PLUGIN_API int XPluginStart(
 							char *		outName,
@@ -64,13 +85,24 @@ PLUGIN_API int XPluginStart(
 	params.right = params.left + 200;
 	params.top = params.bottom + 200;
 	
-	g_window = XPLMCreateWindowEx(&params);
+
 	
+	std::string lib_path = getLibraryPath("\\ExampleGameEnginePlugin.dll");
+
+	hGepHandle = ::LoadLibrary((LPCSTR)lib_path.c_str());
+
+	std::string message = "Oops!";
+	if (hGepHandle != 0) {
+		message = "Nice work!";
+	}
+
+	g_window = XPLMCreateWindowEx(&params);
+
 	// Position the window as a "free" floating window, which the user can drag around
 	XPLMSetWindowPositioningMode(g_window, xplm_WindowPositionFree, -1);
 	// Limit resizing our window: maintain a minimum width/height of 100 boxels and a max width/height of 300 boxels
 	XPLMSetWindowResizingLimits(g_window, 200, 200, 300, 300);
-	XPLMSetWindowTitle(g_window, "Sample Window");
+	XPLMSetWindowTitle(g_window, message.c_str());
 	
 	return g_window != NULL;
 }
