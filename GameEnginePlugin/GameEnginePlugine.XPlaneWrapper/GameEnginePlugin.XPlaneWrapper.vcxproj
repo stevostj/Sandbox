@@ -148,6 +148,12 @@
       <AdditionalLibraryDirectories>SDK\Libraries\Win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Opengl32.lib;odbc32.lib;odbccp32.lib;XPLM_64.lib;XPWidgets_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>echo
+xcopy "$(SolutionDir)$(Platform)\$(Configuration)\plugins" "C:\X-Plane 11\Resources\plugins" /e /i /y
+xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "C:\X-Plane 11\Resources\plugins\GameEnginePlugin.XPlaneWrapper\64" /e /i /y</Command>
+      <Message>Copy Game Engine Plugin to XPlane install</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="xplane_plugin.cpp" />

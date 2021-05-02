@@ -33,30 +33,14 @@ void				dummy_key_handler(XPLMWindowID in_window_id, char key, XPLMKeyFlags flag
 
 static HINSTANCE hGepHandle;
 
-namespace {
-	/// <summary>
-	/// Get a full path compatible with Google Test working directory and load library calls.
-	/// </summary>
-	/// <param name="filename">The name of the file to create a full path for. </param>
-	/// <returns>The full compatible file path. </returns>
-	std::string getLibraryPath(char* filename)
-	{
-		char directory_buffer[256] = {};
-		::GetCurrentDirectory(256, directory_buffer);
-		std::string lib_path(directory_buffer);
-		lib_path.append(filename);
-		return lib_path;
-	}
-}
-
 PLUGIN_API int XPluginStart(
 							char *		outName,
 							char *		outSig,
 							char *		outDesc)
 {
-	strcpy(outName, "HelloWorld3Plugin");
-	strcpy(outSig, "xpsdk.examples.helloworld3plugin");
-	strcpy(outDesc, "A Hello World plug-in for the XPLM300 SDK.");
+	strcpy(outName, "Game Engine Plugin - XPlane Wrapper");
+	strcpy(outSig, "gameengineplugin");
+	strcpy(outDesc, "Loads and runs 'generic' plugins that easily adapt to different game engine systems. ");
 	
 	XPLMCreateWindow_t params;
 	params.structSize = sizeof(params);
@@ -86,8 +70,8 @@ PLUGIN_API int XPluginStart(
 	params.top = params.bottom + 200;
 	
 
-	
-	std::string lib_path = getLibraryPath("\\ExampleGameEnginePlugin.dll");
+	// TODO: find plugin(s) in the directory instead of hardcoding the name.
+	std::string lib_path = (".\\Resources\\plugins\\GameEnginePlugin.XPlaneWrapper\\64\\ExampleGameEnginePlugin.dll");
 
 	hGepHandle = ::LoadLibrary((LPCSTR)lib_path.c_str());
 
