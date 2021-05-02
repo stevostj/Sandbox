@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ExampleGameEnginePluginHost.cpp">
+    <ClCompile Include="example_game_engine_plugin_host.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
