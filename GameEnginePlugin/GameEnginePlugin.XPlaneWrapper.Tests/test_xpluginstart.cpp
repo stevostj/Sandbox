@@ -56,17 +56,18 @@ TEST_F(PluginTestFixture, TestXPluginStartGEPPresent) {
 
 }
 
-TEST_F(PluginTestFixture, TestXPluginStartGEPNotPresent) {
-
-    // resolve function address here
-    XPluginStartFunc xpluginstart_func = (XPluginStartFunc) ::GetProcAddress(hGetProcIDDLL, "XPluginStart");
-    EXPECT_NE(xpluginstart_func, (XPluginStartFunc)0); // XPluginStart function found
-
-    char name[256] = {};
-    char sig[256] = {};
-    char desc[256] = {};
-
-    int xpluginstart_rv = xpluginstart_func(name, sig, desc);
-    EXPECT_EQ(xpluginstart_rv, 0); // xpluginstart failure
-
-}
+// TODO: Test failure condition by deleting game engine plugin file(s)
+//TEST_F(PluginTestFixture, TestXPluginStartGEPNotPresent) {
+//
+//    // resolve function address here
+//    XPluginStartFunc xpluginstart_func = (XPluginStartFunc) ::GetProcAddress(hGetProcIDDLL, "XPluginStart");
+//    EXPECT_NE(xpluginstart_func, (XPluginStartFunc)0); // XPluginStart function found
+//
+//    char name[256] = {};
+//    char sig[256] = {};
+//    char desc[256] = {};
+//
+//    int xpluginstart_rv = xpluginstart_func(name, sig, desc);
+//    EXPECT_EQ(xpluginstart_rv, 0); // xpluginstart failure
+//
+//}
