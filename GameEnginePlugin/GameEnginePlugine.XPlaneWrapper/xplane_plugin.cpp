@@ -1,19 +1,8 @@
-
+#include <windows.h>
+#include <GL/gl.h>
+#include <string>
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
-#include <string>
-
-#ifdef IBM
-	#include <windows.h>
-#endif
-#if LIN
-	#include <GL/gl.h>
-#elif __GNUC__
-	#include <OpenGL/gl.h>
-#else
-	#include <GL/gl.h>
-#endif
-
 #include "game_engine_plugin_api.h"
 #include "xplane_plugin.h"
 
@@ -29,11 +18,12 @@ HINSTANCE LoadGameEnginePluginLibraries()
 {
 
 	// TODO: find plugin(s) in the directory instead of hardcoding the name.
-	//std::string lib_path = (".\\Resources\\plugins\\GameEnginePlugin.XPlaneWrapper\\64\\ExampleGameEnginePlugin.dll");
 	std::wstring lib_path = DllPath + L"\\ExampleGameEnginePlugin.dll";
 
 	return ::LoadLibrary((LPWSTR)lib_path.c_str());
 }
+
+
 
 PLUGIN_API int XPluginStart(
 							char *		outName,
