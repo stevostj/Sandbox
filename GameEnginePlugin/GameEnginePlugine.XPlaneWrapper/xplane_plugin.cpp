@@ -14,23 +14,25 @@
 	#include <GL/gl.h>
 #endif
 
-#include "game_engine_plugin_api.h""
+#include "game_engine_plugin_api.h"
+#include "xplane_plugin.h"
 
 
 #ifndef XPLM300
 	#error This is made to be compiled against the XPLM300 SDK
 #endif
 
-
 static HINSTANCE hGepHandle;
+
 
 HINSTANCE LoadGameEnginePluginLibraries()
 {
 
 	// TODO: find plugin(s) in the directory instead of hardcoding the name.
-	std::string lib_path = (".\\Resources\\plugins\\GameEnginePlugin.XPlaneWrapper\\64\\ExampleGameEnginePlugin.dll");
+	//std::string lib_path = (".\\Resources\\plugins\\GameEnginePlugin.XPlaneWrapper\\64\\ExampleGameEnginePlugin.dll");
+	std::wstring lib_path = DllPath + L"\\ExampleGameEnginePlugin.dll";
 
-	return ::LoadLibrary((LPCSTR)lib_path.c_str());
+	return ::LoadLibrary((LPWSTR)lib_path.c_str());
 }
 
 PLUGIN_API int XPluginStart(
