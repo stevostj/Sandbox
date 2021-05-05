@@ -159,10 +159,12 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\plugins" "C:\X-Plane 11\Resour
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="symbology_adapter.cpp" />
     <ClCompile Include="xplane_plugin.cpp" />
+    <ClCompile Include="xplmdisplay_proxy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="symbology_adapter.h" />
     <ClInclude Include="xplane_plugin.h" />
+    <ClInclude Include="xplmdisplay_proxy.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

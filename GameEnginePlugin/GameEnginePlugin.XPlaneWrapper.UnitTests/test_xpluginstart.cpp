@@ -1,6 +1,11 @@
 #include "pch.h"
 #include <windows.h>
 
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
+
+#include "..\GameEnginePlugine.XPlaneWrapper\xplmdisplay_proxy.h"
+
 namespace {
 
     typedef int(__stdcall* XPluginStartFunc)(char *, char *, char *);       // XPluginStart function signature with calling convention
@@ -9,7 +14,8 @@ namespace {
     protected:
         void SetUp() override {
 
-            std::wstring lib_path = getLibraryPath(L"\\plugins\\GameEnginePlugin.XPlaneWrapper\\64\\win.xpl");
+            std::wstring kXPlanePluginPath = L"\\plugins\\GameEnginePlugin.XPlaneWrapper\\64\\win.xpl";
+            std::wstring lib_path = getLibraryPath(kXPlanePluginPath);
 
             hGetProcIDDLL = ::LoadLibrary((LPWSTR)lib_path.c_str());
             EXPECT_NE(hGetProcIDDLL, (HINSTANCE)0); // library loaded
@@ -20,7 +26,7 @@ namespace {
             EXPECT_TRUE(unload_rv); // library unloaded
         }
 
-        HINSTANCE hGetProcIDDLL;
+        HINSTANCE hGetProcIDDLL = 0;
 
     private:
 
@@ -29,7 +35,7 @@ namespace {
         /// </summary>
         /// <param name="filename">The name of the file to create a full path for. </param>
         /// <returns>The full compatible file path. </returns>
-        std::wstring getLibraryPath(wchar_t* filename)
+        std::wstring getLibraryPath(std::wstring const & filename)
         {
             wchar_t directory_buffer[256] = {};
             ::GetCurrentDirectory(256, directory_buffer);
@@ -37,6 +43,11 @@ namespace {
             lib_path.append(filename);
             return lib_path;
         }
+    };
+
+    class MockXPLMDisplayProxy : public XPLMDisplayProxy {
+     public:
+         MOCK_METHOD(void, XPLMGetMouseLocation, (int *outX, int* outY), (override));
     };
 
 }
@@ -53,6 +64,8 @@ TEST_F(PluginTestFixture, TestXPluginStartGEPPresent) {
 
     int xpluginstart_rv = xpluginstart_func(name, sig, desc);
     EXPECT_EQ(xpluginstart_rv, 1); // xpluginstart ok
+
+    // Expected Xplugin calls are made to wire up symbology to the game engine plugin
 
 }
 

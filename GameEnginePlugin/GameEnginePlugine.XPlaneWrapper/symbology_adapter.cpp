@@ -74,6 +74,10 @@ static int my_draw_tex(
     return 0;
 }
 
+SymbologyAdapter::SymbologyAdapter(XPLMDisplayProxy* displayProxy)
+{
+}
+
 int SymbologyAdapter::setup()
 {
 
