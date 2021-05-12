@@ -4,7 +4,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-#include "..\GameEnginePlugine.XPlaneWrapper\xplmdisplay_proxy.h"
+#include "xplmdisplay_proxy.h"
 
 using ::testing::NotNull;
 using ::testing::_;
@@ -51,6 +51,7 @@ namespace {
         }
     };
 
+
     class MockXPLMDisplayProxy : public XPLMDisplayProxy {
      public:
          MOCK_METHOD(int, XPLMRegisterDrawCallback, (
@@ -80,9 +81,6 @@ TEST_F(PluginTestFixture, TestXPluginStartGEPPresent) {
 
     EXPECT_CALL(display_proxy, XPLMRegisterDrawCallback(NotNull(), _, _, NotNull()))
         .Times(1);
-
-
-
 }
 
 // TODO: Test failure condition by deleting game engine plugin file(s)

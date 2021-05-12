@@ -26,6 +26,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameEnginePlugin.XPlaneWrap
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameEnginePlugin.XPlaneWrapper.UnitTests", "GameEnginePlugin.XPlaneWrapper.UnitTests\GameEnginePlugin.XPlaneWrapper.UnitTests.vcxproj", "{C8932156-BE49-4EF1-AB20-391F8348236F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XPlane", "XPlane", "{B277FD0A-297B-45C9-8682-58CFAC7DED2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -75,6 +77,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B277FD0A-297B-45C9-8682-58CFAC7DED2B} = {F46DCD58-7BB7-4033-8E0B-132F574A57E5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {590DFFFA-CB14-455D-9B42-68B9F0CBD5C6}

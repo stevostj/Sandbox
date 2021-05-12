@@ -3,12 +3,12 @@
 
 #include "xplmdisplay_proxy.h"
 
-class SymbologyAdapter
-{
- public:
-	SymbologyAdapter(XPLMDisplayProxy* displayProxy);
-
-	int setup();
-};
+//class SymbologyAdapter
+//{
+// public:
+//	SymbologyAdapter(XPLMDisplayProxy* displayProxy);
+//
+//	int setup();
+//};
 
 #endif
