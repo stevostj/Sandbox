@@ -9,3 +9,7 @@ A host application ingests instances of a game engine plugin and interacts with 
 ![](./GameEnginePluginInterface.png)
 
 ![](./GameEnginePluginLifecycle.png)
+
+![](./Game%20Engine%20Plugin%20-%20X-Plane%20Integration.png)
+
+![](./XPlaneWrapper.png)

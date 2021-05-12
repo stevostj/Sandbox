@@ -1,9 +1,22 @@
 @startuml
 
-title "Game Engine Plugin Interface"
+title "XPlaneWrapper"
 
 interface "IGameEnginePlugin"  as IGEP {
     + {static} int GEP Initialize()
 }
+
+class XPLMDisplayRegisterDrawCallbackFunc{
+
+}
+
+class "XPlaneWrapper"  as XPW {
+    + {static} int XPluginStart(char *, char *, char *)
+
+    + {static} XPLMDisplayRegisterDrawCallbackFunc XPLMDisplayRegisterDrawCallback
+
+}
+
+XPW o-- IGEP
 
 @enduml
