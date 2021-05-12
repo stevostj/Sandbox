@@ -13,8 +13,8 @@
 #endif
 
 HINSTANCE hGepHandle;
-int operating_context; // global variable used track whether the plugin is being run in unit test context or xplane context. 
-SymbologyAdapter * symbology_adapter;
+//int operating_context; // global variable used track whether the plugin is being run in unit test context or xplane context. 
+//SymbologyAdapter * symbology_adapter;
 
 HINSTANCE LoadGameEnginePluginLibraries()
 {
@@ -40,8 +40,8 @@ PLUGIN_API int XPluginStart(
 
 	int xpluginstart_rv = (hGepHandle != 0) ? 1 : 0;
 	
-	XPLMDisplayProxy* displayProxy;
-	symbology_adapter = new SymbologyAdapter(displayProxy);
+	//XPLMDisplayProxy* displayProxy;
+	//symbology_adapter = new SymbologyAdapter(displayProxy);
 
 	return xpluginstart_rv;
 }
@@ -49,15 +49,10 @@ PLUGIN_API int XPluginStart(
 PLUGIN_API void	XPluginStop(void)
 {
 	// TODO: Clean up resources
-	delete symbology_adapter;
-	symbology_adapter = nullptr;
+	//delete symbology_adapter;
+	//symbology_adapter = nullptr;
 }
 
 PLUGIN_API void XPluginDisable(void) { }
 PLUGIN_API int  XPluginEnable(void)  { return 1; }
 PLUGIN_API void XPluginReceiveMessage(XPLMPluginID inFrom, int inMsg, void * inParam) { }
-
-PLUGIN_API void XPluginSetOperatingContext(int inContext) 
-{
-	operating_context = inContext;
-}

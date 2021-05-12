@@ -6,6 +6,9 @@
 
 #include "..\GameEnginePlugine.XPlaneWrapper\xplmdisplay_proxy.h"
 
+using ::testing::NotNull;
+using ::testing::_;
+
 namespace {
 
     typedef int(__stdcall* XPluginStartFunc)(char *, char *, char *);       // XPluginStart function signature with calling convention
@@ -14,10 +17,13 @@ namespace {
     protected:
         void SetUp() override {
 
-            std::wstring kXPlanePluginPath = L"\\plugins\\GameEnginePlugin.XPlaneWrapper\\64\\win.xpl";
-            std::wstring lib_path = getLibraryPath(kXPlanePluginPath);
+            const std::wstring kXPlaneRelativePluginPath = L"\\plugins\\GameEnginePlugin.XPlaneWrapper\\64\\win.xpl";
 
-            hGetProcIDDLL = ::LoadLibrary((LPWSTR)lib_path.c_str());
+            std::wstring lib_path = getLibraryFullPath(kXPlaneRelativePluginPath);
+
+            const wchar_t* lib_cstr_path = lib_path.c_str();
+            hGetProcIDDLL = ::LoadLibrary(lib_cstr_path);
+            DWORD error_code = ::GetLastError();
             EXPECT_NE(hGetProcIDDLL, (HINSTANCE)0); // library loaded
         }
 
@@ -35,7 +41,7 @@ namespace {
         /// </summary>
         /// <param name="filename">The name of the file to create a full path for. </param>
         /// <returns>The full compatible file path. </returns>
-        std::wstring getLibraryPath(std::wstring const & filename)
+        std::wstring getLibraryFullPath(std::wstring const & filename)
         {
             wchar_t directory_buffer[256] = {};
             ::GetCurrentDirectory(256, directory_buffer);
@@ -47,7 +53,11 @@ namespace {
 
     class MockXPLMDisplayProxy : public XPLMDisplayProxy {
      public:
-         MOCK_METHOD(void, XPLMGetMouseLocation, (int *outX, int* outY), (override));
+         MOCK_METHOD(int, XPLMRegisterDrawCallback, (
+             XPLMDrawCallback_f   inCallback,
+             XPLMDrawingPhase     inPhase,
+             int                  inWantsBefore,
+             void* inRefcon), (override));
     };
 
 }
@@ -66,6 +76,12 @@ TEST_F(PluginTestFixture, TestXPluginStartGEPPresent) {
     EXPECT_EQ(xpluginstart_rv, 1); // xpluginstart ok
 
     // Expected Xplugin calls are made to wire up symbology to the game engine plugin
+    MockXPLMDisplayProxy display_proxy;
+
+    EXPECT_CALL(display_proxy, XPLMRegisterDrawCallback(NotNull(), _, _, NotNull()))
+        .Times(1);
+
+
 
 }
 

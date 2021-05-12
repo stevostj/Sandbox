@@ -1,0 +1,19 @@
+@startuml
+
+title "Game Engine Plugin - X-Plane Integration"
+
+frame "XPlane" as HA {
+[Game Engine Plugin \nXPlane Wrapper] as HAI
+[Game Engine Plugin] as GEP
+() "IGameEnginePlugin" as IGEP
+() "XPlugin" as IXP
+}
+
+IGEP -- GEP
+
+IXP -- HAI
+
+HAI <..> IGEP
+
+
+@enduml
