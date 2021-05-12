@@ -27,6 +27,22 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameEnginePlugin.XPlaneWrapper.UnitTests", "GameEnginePlugin.XPlaneWrapper.UnitTests\GameEnginePlugin.XPlaneWrapper.UnitTests.vcxproj", "{C8932156-BE49-4EF1-AB20-391F8348236F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XPlane", "XPlane", "{B277FD0A-297B-45C9-8682-58CFAC7DED2B}"
+	ProjectSection(SolutionItems) = preProject
+		XPlane\SDK\CHeaders\XPLM\XPLMCamera.h = XPlane\SDK\CHeaders\XPLM\XPLMCamera.h
+		XPlane\SDK\CHeaders\XPLM\XPLMDataAccess.h = XPlane\SDK\CHeaders\XPLM\XPLMDataAccess.h
+		XPlane\SDK\CHeaders\XPLM\XPLMDefs.h = XPlane\SDK\CHeaders\XPLM\XPLMDefs.h
+		XPlane\SDK\CHeaders\XPLM\XPLMDisplay.h = XPlane\SDK\CHeaders\XPLM\XPLMDisplay.h
+		XPlane\SDK\CHeaders\XPLM\XPLMGraphics.h = XPlane\SDK\CHeaders\XPLM\XPLMGraphics.h
+		XPlane\SDK\CHeaders\XPLM\XPLMInstance.h = XPlane\SDK\CHeaders\XPLM\XPLMInstance.h
+		XPlane\SDK\CHeaders\XPLM\XPLMMap.h = XPlane\SDK\CHeaders\XPLM\XPLMMap.h
+		XPlane\SDK\CHeaders\XPLM\XPLMMenus.h = XPlane\SDK\CHeaders\XPLM\XPLMMenus.h
+		XPlane\SDK\CHeaders\XPLM\XPLMNavigation.h = XPlane\SDK\CHeaders\XPLM\XPLMNavigation.h
+		XPlane\SDK\CHeaders\XPLM\XPLMPlanes.h = XPlane\SDK\CHeaders\XPLM\XPLMPlanes.h
+		XPlane\SDK\CHeaders\XPLM\XPLMPlugin.h = XPlane\SDK\CHeaders\XPLM\XPLMPlugin.h
+		XPlane\SDK\CHeaders\XPLM\XPLMProcessing.h = XPlane\SDK\CHeaders\XPLM\XPLMProcessing.h
+		XPlane\SDK\CHeaders\XPLM\XPLMScenery.h = XPlane\SDK\CHeaders\XPLM\XPLMScenery.h
+		XPlane\SDK\CHeaders\XPLM\XPLMUtilities.h = XPlane\SDK\CHeaders\XPLM\XPLMUtilities.h
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
