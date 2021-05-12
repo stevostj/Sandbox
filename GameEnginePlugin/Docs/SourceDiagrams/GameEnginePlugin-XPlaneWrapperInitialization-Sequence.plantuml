@@ -1,0 +1,58 @@
+@startuml
+
+title "XPlaneWrapper-Initialization"
+
+participant "XPlaneWrapperHost" as HA
+
+HA -> HA: Initialization
+activate HA
+
+create participant "XPlaneWrapper" as HAI
+HA -> HAI: new (via LoadLibrary)
+HA -> HAI: dllmain
+activate HAI
+HAI -> HAI: StoreGlobalPathVariables()
+note right
+determines the filepath of the xplane plugin
+so that the inner game engine plugins can
+be loaded in an XPlane or unit test context
+end note
+HAI -> HAI: SetDefaultXplmApiHooks()
+note right
+api_hooks = XPLM APIs
+end note
+HAI --> HA
+deactivate HAI
+
+alt Not XPlane Application
+HA -> HAI: SetXplmApiHooks(function_pointers)
+note right
+api_hooks = function_pointers
+this allows for mocking out of 
+XPLM APIs for testing
+end note
+activate HAI
+HAI --> HA
+deactivate HAI
+end
+
+HA -> HAI: XPluginStart
+activate HAI
+ref over HAI
+Game Engine Plugin Lifecycle
+end ref
+
+HAI -> HAI: InitializeRenderingCanvas()
+activate HAI
+HAI -> HA: api_hooks.XPLMDisplay.RegisterDrawCallback
+activate HA
+HA --> HAI
+deactivate HA
+
+HAI --> HA
+deactivate HAI
+
+deactivate HA
+
+
+@enduml

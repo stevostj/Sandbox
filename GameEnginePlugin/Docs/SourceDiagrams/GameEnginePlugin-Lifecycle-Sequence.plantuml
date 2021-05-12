@@ -1,6 +1,6 @@
 @startuml
 
-title "Game Engine Plugin Lifecycle"
+title "GameEnginePluginLifecycle"
 
 participant "Host Application" as HA
 

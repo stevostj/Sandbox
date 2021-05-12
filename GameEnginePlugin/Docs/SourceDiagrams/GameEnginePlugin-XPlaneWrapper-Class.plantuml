@@ -13,7 +13,7 @@ class XPLMDisplayRegisterDrawCallbackFunc{
 class "XPlaneWrapper"  as XPW {
     + {static} int XPluginStart(char *, char *, char *)
 
-    + {static} XPLMDisplayRegisterDrawCallbackFunc XPLMDisplayRegisterDrawCallback
+    + {static} SetXplmApiHooks(XPLMDisplayRegisterDrawCallbackFunc)
 
 }
 

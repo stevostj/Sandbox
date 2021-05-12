@@ -1,6 +1,6 @@
 @startuml
 
-title "Game Engine Plugin Interface"
+title "GameEnginePluginInterface"
 
 interface "IGameEnginePlugin"  as IGEP {
     + {static} int GEP_Initialize()

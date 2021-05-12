@@ -1,6 +1,6 @@
 @startuml
 
-title "Game Engine Plugin - X-Plane Integration"
+title "GameEnginePlugin-XPlaneIntegration"
 
 frame "XPlane" as HA {
 [Game Engine Plugin \nXPlane Wrapper] as XPW
