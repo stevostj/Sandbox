@@ -1,8 +1,12 @@
 #include "pch.h"
 #include "xplmdisplay_proxy.h"
 
-MockXPLMDisplayProxy* MockXPLMDisplayProxy::instance_ = nullptr;
+namespace gep_xpw_ut {
 
-MockXPLMDisplayProxy::~MockXPLMDisplayProxy() {
-    xplm_register_draw_callback_handler_ = nullptr;
+	MockXPLMDisplayProxy* MockXPLMDisplayProxy::instance_ = nullptr;
+
+	MockXPLMDisplayProxy::~MockXPLMDisplayProxy() {
+		xplm_register_draw_callback_handler_ = nullptr;
+	}
+
 }

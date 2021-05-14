@@ -6,6 +6,7 @@
 
 #include "set_xplm_api_hooks.h"
 
+#include "xplmgraphics_proxy.h"
 #include "xplmdisplay_proxy.h"
 
 using ::testing::NotNull;
@@ -26,35 +27,42 @@ namespace {
 
             std::wstring lib_path = getLibraryFullPath(kXPlaneRelativePluginPath);
 
+            // check library loads ok
             const wchar_t* lib_cstr_path = lib_path.c_str();
             hGetProcIDDLL = ::LoadLibrary(lib_cstr_path);
-            DWORD error_code = ::GetLastError();
-            EXPECT_NE(hGetProcIDDLL, (HINSTANCE)0); // library loaded
+            DWORD error_code = ::GetLastError(); // useful when debugging
+            EXPECT_NE(hGetProcIDDLL, (HINSTANCE)0);
 
-            // Hook in alternative functions to XPLM APIs
+            // Find function for hooking apis
             SetXplmApiHooksFunc setxplmapihooks_func = (SetXplmApiHooksFunc) ::GetProcAddress(hGetProcIDDLL, "SetXplmApiHooks");
             EXPECT_NE(setxplmapihooks_func, (SetXplmApiHooksFunc)0); // SetXplmApiHooks function found
 
+            // setxplmapihooks returns error on null callback
             int setxplmapihooks_rv = setxplmapihooks_func(nullptr);
-            EXPECT_EQ(setxplmapihooks_rv, -1); // setxplmapihooks error on null callback
+            EXPECT_EQ(setxplmapihooks_rv, -1); 
 
 
-            display_proxy_ = &MockXPLMDisplayProxy::get_instance();
+            // Hook in alternative functions to XPLM APIs
+            display_proxy_ = &gep_xpw_ut::MockXPLMDisplayProxy::get_instance();
             setxplmapihooks_rv = setxplmapihooks_func(display_proxy_->get_XPLMRegisterDrawCallbackHandler());
             EXPECT_EQ(setxplmapihooks_rv, SXPLMAH_INITIALIZE_OK); // setxplmapihooks ok
 
         }
 
         void TearDown() override {
+
+            // library unloaded ok
             BOOL unload_rv = ::FreeLibrary(hGetProcIDDLL);
-            EXPECT_TRUE(unload_rv); // library unloaded
+            EXPECT_TRUE(unload_rv);
 
             display_proxy_->destroy();
         }
 
         HINSTANCE hGetProcIDDLL = 0;
 
-        MockXPLMDisplayProxy * display_proxy_;
+        gep_xpw_ut::MockXPLMDisplayProxy * display_proxy_;
+
+        gep_xpw_ut::MockXPLMGraphicsProxy* graphics_proxy_;
 
     private:
 
@@ -84,6 +92,9 @@ TEST_F(PluginTestFixture, TestXPluginStartGEPPresent) {
     // XpluginStart calls wires up the wrapper plugin to respond to drawing callbacks
     EXPECT_CALL(*display_proxy_, XPLMRegisterDrawCallback(NotNull(), xplm_Phase_LastCockpit, 1 /*end of phase*/, _))
         .WillOnce(Return(1));
+
+    EXPECT_CALL(*graphics_proxy_, XPLMSetGraphicsState(0, _, 0, _, _, _, _))
+        .Times(1);
 
     char name[256] = {};
     char sig[256] = {};

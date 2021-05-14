@@ -38,6 +38,7 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="xplmdisplay_proxy.h" />
+    <ClInclude Include="xplmgraphics_proxy.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -48,6 +49,7 @@
     </ClCompile>
     <ClCompile Include="test_xpluginstart.cpp" />
     <ClCompile Include="xplmdisplay_proxy.cpp" />
+    <ClCompile Include="xplmgraphics_proxy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
