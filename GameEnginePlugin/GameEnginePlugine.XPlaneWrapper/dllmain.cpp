@@ -17,6 +17,10 @@ XplmDisplayRegisterDrawCallbackFunc XPLMDisplayRegisterDrawCallback;
 
 namespace {
 
+    /// <summary>
+    /// Determines the full path to this dll and sets global path variables
+    /// </summary>
+    /// <param name="hModule">Handle to this dll</param>
     void SetDllPaths(HMODULE hModule) 
     {
         bool paths_set = false;
@@ -34,6 +38,9 @@ namespace {
         DllPath = DllPathAndName.substr(0, found);
     }
 
+    /// <summary>
+    /// Default API hooks to XPlane functions
+    /// </summary>
     void SetDefaultXplmApiHooks() {
         XPLMDisplayRegisterDrawCallback = &XPLMRegisterDrawCallback;
     }
@@ -44,14 +51,17 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 {
     switch (ul_reason_for_call)
     {
-    case DLL_PROCESS_ATTACH: case DLL_THREAD_ATTACH: case DLL_THREAD_DETACH:
+    case DLL_PROCESS_ATTACH: 
+    {
+        SetDllPaths(hModule);
+        SetDefaultXplmApiHooks();
+        break;
+    }
+    case DLL_THREAD_ATTACH: 
+    case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:
         break;
     }
-    
-    SetDllPaths(hModule);
-
-    SetDefaultXplmApiHooks();
 
     return TRUE;
 }

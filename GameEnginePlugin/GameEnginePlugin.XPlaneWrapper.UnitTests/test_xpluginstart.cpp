@@ -10,6 +10,7 @@
 
 using ::testing::NotNull;
 using ::testing::_;
+using ::testing::Return;
 
 namespace {
 
@@ -34,10 +35,13 @@ namespace {
             SetXplmApiHooksFunc setxplmapihooks_func = (SetXplmApiHooksFunc) ::GetProcAddress(hGetProcIDDLL, "SetXplmApiHooks");
             EXPECT_NE(setxplmapihooks_func, (SetXplmApiHooksFunc)0); // SetXplmApiHooks function found
 
+            int setxplmapihooks_rv = setxplmapihooks_func(nullptr);
+            EXPECT_EQ(setxplmapihooks_rv, -1); // setxplmapihooks error on null callback
+
 
             display_proxy_ = &MockXPLMDisplayProxy::get_instance();
-            int setxplmapihooks_rv = setxplmapihooks_func(display_proxy_->get_XPLMRegisterDrawCallbackHandler());
-            EXPECT_EQ(setxplmapihooks_rv, 0); // setxplmapihooks ok
+            setxplmapihooks_rv = setxplmapihooks_func(display_proxy_->get_XPLMRegisterDrawCallbackHandler());
+            EXPECT_EQ(setxplmapihooks_rv, SXPLMAH_INITIALIZE_OK); // setxplmapihooks ok
 
         }
 
@@ -77,6 +81,10 @@ TEST_F(PluginTestFixture, TestXPluginStartGEPPresent) {
     XPluginStartFunc xpluginstart_func = (XPluginStartFunc) ::GetProcAddress(hGetProcIDDLL, "XPluginStart");
     EXPECT_NE(xpluginstart_func, (XPluginStartFunc)0); // XPluginStart function found
 
+    // XpluginStart calls wires up the wrapper plugin to respond to drawing callbacks
+    EXPECT_CALL(*display_proxy_, XPLMRegisterDrawCallback(NotNull(), xplm_Phase_LastCockpit, 1 /*end of phase*/, _))
+        .WillOnce(Return(1));
+
     char name[256] = {};
     char sig[256] = {};
     char desc[256] = {};
@@ -84,11 +92,6 @@ TEST_F(PluginTestFixture, TestXPluginStartGEPPresent) {
     int xpluginstart_rv = xpluginstart_func(name, sig, desc);
     EXPECT_EQ(xpluginstart_rv, 1); // xpluginstart ok
 
-
-    // Expected Xplugin calls are made to wire up symbology to the game engine plugin
-
-    EXPECT_CALL(*display_proxy_, XPLMRegisterDrawCallback(NotNull(), _, _, NotNull()))
-        .Times(1);
 }
 
 // TODO: Test failure condition by deleting game engine plugin file(s)

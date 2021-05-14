@@ -12,20 +12,27 @@
 	#error This is made to be compiled against the XPLM300 SDK
 #endif
 
-HINSTANCE hGepHandle;
-//int operating_context; // global variable used track whether the plugin is being run in unit test context or xplane context. 
+HINSTANCE hGepHandle; //global
+
 //SymbologyAdapter * symbology_adapter;
 
-HINSTANCE LoadGameEnginePluginLibraries()
-{
+namespace {
+	HINSTANCE LoadGameEnginePluginLibraries()
+	{
 
-	// TODO: find plugin(s) in the directory instead of hardcoding the name.
-	std::wstring lib_path = DllPath + L"\\ExampleGameEnginePlugin.dll";
+		// TODO: find plugin(s) in the directory instead of hardcoding the name.
+		std::wstring lib_path = DllPath + L"\\ExampleGameEnginePlugin.dll";
 
-	return ::LoadLibrary((LPWSTR)lib_path.c_str());
+		return ::LoadLibrary((LPWSTR)lib_path.c_str());
+	}
+
+
+	// TODO: Move this into its own file
+	int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon)
+	{
+		return 1;
+	}
 }
-
-
 
 PLUGIN_API int XPluginStart(
 							char *		outName,
@@ -38,10 +45,12 @@ PLUGIN_API int XPluginStart(
 
     hGepHandle = LoadGameEnginePluginLibraries();
 
-	int xpluginstart_rv = (hGepHandle != 0) ? 1 : 0;
+	int xpluginstart_rv = (hGepHandle != 0 && XPLMDisplayRegisterDrawCallback != nullptr) ? 1 : 0;
 	
-	//XPLMDisplayProxy* displayProxy;
-	//symbology_adapter = new SymbologyAdapter(displayProxy);
+	if (xpluginstart_rv != 0)
+	{
+		xpluginstart_rv = XPLMDisplayRegisterDrawCallback(XPLMDrawCallback, xplm_Phase_LastCockpit, 1 /*end of phase*/, nullptr /*TODO: needs to be unique?*/);
+	}
 
 	return xpluginstart_rv;
 }
