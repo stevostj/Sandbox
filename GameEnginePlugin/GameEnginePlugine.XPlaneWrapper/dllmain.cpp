@@ -3,19 +3,42 @@
 #ifdef IBM
 #include <windows.h>
 #endif
-#if LIN
-#include <GL/gl.h>
-#elif __GNUC__
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
 
+#include <GL/gl.h>
+
+#include "XPLMDisplay.h"
 #include "xplane_plugin.h"
 
+// globals
 HMODULE hMod;
 std::wstring DllPathAndName;
 std::wstring DllPath;
+XplmDisplayRegisterDrawCallbackFunc XPLMDisplayRegisterDrawCallback;
+
+namespace {
+
+    void SetDllPaths(HMODULE hModule) 
+    {
+        bool paths_set = false;
+        hMod = hModule;
+        const int BUFSIZE = 4096;
+        wchar_t buffer[BUFSIZE];
+        if (::GetModuleFileName(hMod, buffer, BUFSIZE - 1) <= 0)
+        {
+            return;
+        }
+
+        DllPathAndName = buffer;
+
+        size_t found = DllPathAndName.find_last_of(L"/\\");
+        DllPath = DllPathAndName.substr(0, found);
+    }
+
+    void SetDefaultXplmApiHooks() {
+        XPLMDisplayRegisterDrawCallback = &XPLMRegisterDrawCallback;
+    }
+
+}
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
@@ -25,18 +48,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     case DLL_PROCESS_DETACH:
         break;
     }
-    hMod = hModule;
-    const int BUFSIZE = 4096;
-    wchar_t buffer[BUFSIZE];
-    if (::GetModuleFileName(hMod, buffer, BUFSIZE - 1) <= 0)
-    {
-        return TRUE;
-    }
+    
+    SetDllPaths(hModule);
 
-    DllPathAndName = buffer;
-
-    size_t found = DllPathAndName.find_last_of(L"/\\");
-    DllPath = DllPathAndName.substr(0, found);
+    SetDefaultXplmApiHooks();
 
     return TRUE;
 }

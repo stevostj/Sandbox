@@ -4,6 +4,8 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
+#include "set_xplm_api_hooks.h"
+
 #include "xplmdisplay_proxy.h"
 
 using ::testing::NotNull;
@@ -11,9 +13,11 @@ using ::testing::_;
 
 namespace {
 
-    typedef int(__stdcall* XPluginStartFunc)(char *, char *, char *);       // XPluginStart function signature with calling convention
+    typedef int(__stdcall* XPluginStartFunc)(char *, char *, char *);
 
-    class PluginTestFixture : public ::testing::Test {
+    typedef int(__stdcall* SetXplmApiHooksFunc)(XplmDisplayRegisterDrawCallbackFunc);
+
+        class PluginTestFixture : public ::testing::Test {
     protected:
         void SetUp() override {
 
@@ -25,14 +29,28 @@ namespace {
             hGetProcIDDLL = ::LoadLibrary(lib_cstr_path);
             DWORD error_code = ::GetLastError();
             EXPECT_NE(hGetProcIDDLL, (HINSTANCE)0); // library loaded
+
+            // Hook in alternative functions to XPLM APIs
+            SetXplmApiHooksFunc setxplmapihooks_func = (SetXplmApiHooksFunc) ::GetProcAddress(hGetProcIDDLL, "SetXplmApiHooks");
+            EXPECT_NE(setxplmapihooks_func, (SetXplmApiHooksFunc)0); // SetXplmApiHooks function found
+
+
+            display_proxy_ = &MockXPLMDisplayProxy::get_instance();
+            int setxplmapihooks_rv = setxplmapihooks_func(display_proxy_->get_XPLMRegisterDrawCallbackHandler());
+            EXPECT_EQ(setxplmapihooks_rv, 0); // setxplmapihooks ok
+
         }
 
         void TearDown() override {
             BOOL unload_rv = ::FreeLibrary(hGetProcIDDLL);
             EXPECT_TRUE(unload_rv); // library unloaded
+
+            display_proxy_->destroy();
         }
 
         HINSTANCE hGetProcIDDLL = 0;
+
+        MockXPLMDisplayProxy * display_proxy_;
 
     private:
 
@@ -51,16 +69,6 @@ namespace {
         }
     };
 
-
-    class MockXPLMDisplayProxy : public XPLMDisplayProxy {
-     public:
-         MOCK_METHOD(int, XPLMRegisterDrawCallback, (
-             XPLMDrawCallback_f   inCallback,
-             XPLMDrawingPhase     inPhase,
-             int                  inWantsBefore,
-             void* inRefcon), (override));
-    };
-
 }
 
 TEST_F(PluginTestFixture, TestXPluginStartGEPPresent) {
@@ -76,10 +84,10 @@ TEST_F(PluginTestFixture, TestXPluginStartGEPPresent) {
     int xpluginstart_rv = xpluginstart_func(name, sig, desc);
     EXPECT_EQ(xpluginstart_rv, 1); // xpluginstart ok
 
-    // Expected Xplugin calls are made to wire up symbology to the game engine plugin
-    MockXPLMDisplayProxy display_proxy;
 
-    EXPECT_CALL(display_proxy, XPLMRegisterDrawCallback(NotNull(), _, _, NotNull()))
+    // Expected Xplugin calls are made to wire up symbology to the game engine plugin
+
+    EXPECT_CALL(*display_proxy_, XPLMRegisterDrawCallback(NotNull(), _, _, NotNull()))
         .Times(1);
 }
 

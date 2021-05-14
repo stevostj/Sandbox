@@ -15,5 +15,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)game_engine_plugin_api.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)set_xplm_api_hooks.h" />
   </ItemGroup>
 </Project>

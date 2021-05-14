@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-#define GEP_INITIALIZE_OK = 0
+#define GEP_INITIALIZE_OK 0
 
 GEP_DECLSPEC int GEP_Initialize();
 
