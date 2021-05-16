@@ -159,11 +159,13 @@ copy $(SolutionDir)XPlane\SDK\Libraries\Win\XPWidgets_64.dll $(SolutionDir)$(Pla
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="helper_methods.cpp" />
     <ClCompile Include="set_xplm_api_hooks.cpp" />
     <ClCompile Include="symbology_adapter.cpp" />
     <ClCompile Include="xplane_plugin.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="helper_methods.h" />
     <ClInclude Include="symbology_adapter.h" />
     <ClInclude Include="xplane_plugin.h" />
   </ItemGroup>

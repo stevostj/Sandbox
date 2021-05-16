@@ -21,6 +21,10 @@ namespace gep_xpw_ut {
             int                  inWantsBefore,
             void* inRefcon) = 0;
 
+        virtual void XPLMGetScreenSize(
+            int* outWidth, 
+            int* outHeight) = 0;
+
     };
 
     /// <summary>
@@ -33,8 +37,16 @@ namespace gep_xpw_ut {
         /// An API hook to handle proxy calls to XPLM Display functions.
         /// </summary>
         /// <returns></returns>
-        XplmDisplayRegisterDrawCallbackFunc const & get_XPLMRegisterDrawCallbackHandler() const {
+        XPLMDisplayApi::RegisterDrawCallbackFunc const & get_XPLMRegisterDrawCallbackHandler() const {
             return xplm_register_draw_callback_handler_;
+        }
+
+        /// <summary>
+        /// An API hook to handle proxy calls to XPLM Display functions.
+        /// </summary>
+        /// <returns></returns>
+        XPLMDisplayApi::GetScreenSizeFunc const& get_XPLMGetScreenSizeHandler() const {
+            return xplm_get_screen_size_handler_;
         }
 
         /// <summary>
@@ -72,11 +84,26 @@ namespace gep_xpw_ut {
             return MockXPLMDisplayProxy::get_instance().XPLMRegisterDrawCallback(inCallback, inPhase, inWantsBefore, inRefcon);
         }
 
+
+        /// <summary>
+        /// Forward the XPLMGetScreenSize function call to the mock object
+        /// </summary>
+        /// <param name="outWidth">See XPLMDisplay XPLMGetScreenSize</param>
+        /// <param name="outHeight">See XPLMDisplay XPLMGetScreenSize</param>
+        static void MockXPLMDisplayProxy::HandleXPLMGetScreenSize(int* outWidth, int* outHeight)
+        {
+            MockXPLMDisplayProxy::get_instance().XPLMGetScreenSize(outWidth, outHeight);
+        }
+
         MOCK_METHOD(int, XPLMRegisterDrawCallback, (
             XPLMDrawCallback_f   inCallback,
             XPLMDrawingPhase     inPhase,
             int                  inWantsBefore,
             void* inRefcon), (override));
+
+        MOCK_METHOD(void, XPLMGetScreenSize, (
+            int* outWidth, 
+            int* outHeight), (override)); 
 
         // Disable copying
         MockXPLMDisplayProxy(MockXPLMDisplayProxy& other) = delete;
@@ -85,11 +112,17 @@ namespace gep_xpw_ut {
         void operator=(const MockXPLMDisplayProxy&) = delete;
 
     private:
-        MockXPLMDisplayProxy() : xplm_register_draw_callback_handler_(MockXPLMDisplayProxy::HandleXPLMRegisterDrawCallback) {}
+        MockXPLMDisplayProxy() : 
+            xplm_register_draw_callback_handler_(MockXPLMDisplayProxy::HandleXPLMRegisterDrawCallback), 
+            xplm_get_screen_size_handler_(MockXPLMDisplayProxy::HandleXPLMGetScreenSize)
+        {}
 
         ~MockXPLMDisplayProxy();
 
-        XplmDisplayRegisterDrawCallbackFunc xplm_register_draw_callback_handler_;
+        XPLMDisplayApi::RegisterDrawCallbackFunc xplm_register_draw_callback_handler_;
+
+        XPLMDisplayApi::GetScreenSizeFunc xplm_get_screen_size_handler_;
+
 
         static MockXPLMDisplayProxy* instance_;
 

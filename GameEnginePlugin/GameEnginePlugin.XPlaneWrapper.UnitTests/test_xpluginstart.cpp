@@ -12,12 +12,14 @@
 using ::testing::NotNull;
 using ::testing::_;
 using ::testing::Return;
+using ::testing::DoAll;
+using ::testing::SetArgPointee;
 
 namespace {
 
     typedef int(__stdcall* XPluginStartFunc)(char *, char *, char *);
 
-    typedef int(__stdcall* SetXplmApiHooksFunc)(XplmDisplayRegisterDrawCallbackFunc);
+    typedef int(__stdcall* SetXplmApiHooksFunc)(XPLMDisplayApi, XPLMGraphicsApi);
 
         class PluginTestFixture : public ::testing::Test {
     protected:
@@ -37,16 +39,23 @@ namespace {
             SetXplmApiHooksFunc setxplmapihooks_func = (SetXplmApiHooksFunc) ::GetProcAddress(hGetProcIDDLL, "SetXplmApiHooks");
             EXPECT_NE(setxplmapihooks_func, (SetXplmApiHooksFunc)0); // SetXplmApiHooks function found
 
-            // setxplmapihooks returns error on null callback
-            int setxplmapihooks_rv = setxplmapihooks_func(nullptr);
-            EXPECT_EQ(setxplmapihooks_rv, -1); 
+            // setxplmapihooks returns error on null callbacks
+            XPLMDisplayApi display_api_hooks{};
+            XPLMGraphicsApi graphics_api_hooks{};
 
+            int setxplmapihooks_rv = setxplmapihooks_func(display_api_hooks, graphics_api_hooks);
+            EXPECT_EQ(setxplmapihooks_rv, -1); 
 
             // Hook in alternative functions to XPLM APIs
             display_proxy_ = &gep_xpw_ut::MockXPLMDisplayProxy::get_instance();
-            setxplmapihooks_rv = setxplmapihooks_func(display_proxy_->get_XPLMRegisterDrawCallbackHandler());
-            EXPECT_EQ(setxplmapihooks_rv, SXPLMAH_INITIALIZE_OK); // setxplmapihooks ok
+            display_api_hooks.RegisterDrawCallback = display_proxy_->get_XPLMRegisterDrawCallbackHandler();
+            display_api_hooks.GetScreenSize = display_proxy_->get_XPLMGetScreenSizeHandler();
 
+            graphics_proxy_ = &gep_xpw_ut::MockXPLMGraphicsProxy::get_instance();
+            graphics_api_hooks.SetGraphicsState = graphics_proxy_->get_XPLMSetGraphicsStateHandler();
+
+            setxplmapihooks_rv = setxplmapihooks_func(display_api_hooks, graphics_api_hooks);
+            EXPECT_EQ(setxplmapihooks_rv, SXPLMAH_INITIALIZE_OK); // setxplmapihooks ok
         }
 
         void TearDown() override {
@@ -93,8 +102,9 @@ TEST_F(PluginTestFixture, TestXPluginStartGEPPresent) {
     EXPECT_CALL(*display_proxy_, XPLMRegisterDrawCallback(NotNull(), xplm_Phase_LastCockpit, 1 /*end of phase*/, _))
         .WillOnce(Return(1));
 
-    EXPECT_CALL(*graphics_proxy_, XPLMSetGraphicsState(0, _, 0, _, _, _, _))
-        .Times(1);
+    // The screen size will be retrieved in order to scale symbology
+    EXPECT_CALL(*display_proxy_, XPLMGetScreenSize(_, _))
+        .WillOnce(DoAll(SetArgPointee<0>(100), SetArgPointee<1>(100)));
 
     char name[256] = {};
     char sig[256] = {};

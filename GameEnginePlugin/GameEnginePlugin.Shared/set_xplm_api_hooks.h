@@ -17,17 +17,29 @@
 extern "C" {
 #endif
 
-	typedef int(__stdcall* XplmDisplayRegisterDrawCallbackFunc)(XPLMDrawCallback_f, XPLMDrawingPhase, int, void*); // function signature for XPLMDisplay RegisterDrawCallback
+	// Function signatures and pointers to XPLMDisplay API
+	struct XPLMDisplayApi {
 
+		typedef int(__stdcall* RegisterDrawCallbackFunc)(XPLMDrawCallback_f, XPLMDrawingPhase, int, void*);
+		RegisterDrawCallbackFunc RegisterDrawCallback;
 
-	typedef void(__stdcall* XplmSetGraphicsStateFunc)(int, int, int, int, int, int, int); // function signature for XPLMGraphics SetGraphicsState
+		typedef void(__stdcall* GetScreenSizeFunc)(int*, int*);
+		GetScreenSizeFunc GetScreenSize;
+
+	};
+
+	// Function signatures and pointers to XPLMGraphics API
+	struct XPLMGraphicsApi {
+		typedef void(__stdcall* SetGraphicsStateFunc)(int, int, int, int, int, int, int);
+		SetGraphicsStateFunc SetGraphicsState;
+	};
 
 	/// <summary>
 	/// Passes in alternate pointers to functions to be called instead of the various XPLM functions.
 	/// </summary>
-	/// <param name="reg_draw_cb"></param>
+	/// <param name="display_api_hooks"></param>
 	/// <returns>An error code indicating any problems that occurred while setting the api hooks. </returns>
-	SXPLMAH_DECLSPEC int SetXplmApiHooks(XplmDisplayRegisterDrawCallbackFunc reg_draw_cb, XplmSetGraphicsStateFunc set_graphics_state);
+	SXPLMAH_DECLSPEC int SetXplmApiHooks(XPLMDisplayApi display_api_hooks, XPLMGraphicsApi graphics_api_hooks);
 
 #ifdef __cplusplus
 }

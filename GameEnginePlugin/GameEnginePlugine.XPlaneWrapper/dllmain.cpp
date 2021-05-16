@@ -13,7 +13,8 @@
 HMODULE hMod;
 std::wstring DllPathAndName;
 std::wstring DllPath;
-XplmDisplayRegisterDrawCallbackFunc XPLMDisplayRegisterDrawCallback;
+XPLMDisplayApi XplmDisplayApi;
+XPLMGraphicsApi XplmGraphicsApi;
 
 namespace {
 
@@ -41,27 +42,37 @@ namespace {
     /// <summary>
     /// Default API hooks to XPlane functions
     /// </summary>
-    void SetDefaultXplmApiHooks() {
-        XPLMDisplayRegisterDrawCallback = &XPLMRegisterDrawCallback;
+    int SetDefaultXplmApiHooks() 
+    {
+        XPLMDisplayApi display_api_hooks;
+        display_api_hooks.RegisterDrawCallback = &XPLMRegisterDrawCallback;
+
+        XPLMGraphicsApi graphics_api_hooks;
+        graphics_api_hooks.SetGraphicsState = &XPLMSetGraphicsState;
+
+        return SetXplmApiHooks(display_api_hooks, graphics_api_hooks);
     }
 
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
+    BOOL rv = TRUE;
     switch (ul_reason_for_call)
     {
-    case DLL_PROCESS_ATTACH: 
-    {
-        SetDllPaths(hModule);
-        SetDefaultXplmApiHooks();
-        break;
-    }
-    case DLL_THREAD_ATTACH: 
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-        break;
+        case DLL_PROCESS_ATTACH: 
+        {
+            SetDllPaths(hModule);
+            if (SetDefaultXplmApiHooks() != 0)
+                rv = FALSE;
+
+            break;
+        }
+        case DLL_THREAD_ATTACH: 
+        case DLL_THREAD_DETACH:
+        case DLL_PROCESS_DETACH:
+            break;
     }
 
-    return TRUE;
+    return rv;
 }

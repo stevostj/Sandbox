@@ -8,7 +8,7 @@
 extern std::wstring DllPathAndName;
 extern std::wstring DllPath;
 
-// TODO: Store this and other functions into some sort of object.
-extern XplmDisplayRegisterDrawCallbackFunc XPLMDisplayRegisterDrawCallback;
+extern XPLMDisplayApi XplmDisplayApi;
+extern XPLMGraphicsApi XplmGraphicsApi;
 
 #endif

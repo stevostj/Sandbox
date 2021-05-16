@@ -7,6 +7,7 @@ namespace gep_xpw_ut {
 
 	MockXPLMDisplayProxy::~MockXPLMDisplayProxy() {
 		xplm_register_draw_callback_handler_ = nullptr;
+		xplm_get_screen_size_handler_ = nullptr;
 	}
 
 }

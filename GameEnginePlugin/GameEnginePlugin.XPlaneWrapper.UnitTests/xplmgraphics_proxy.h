@@ -36,7 +36,7 @@ namespace gep_xpw_ut {
         /// An API hook to handle proxy calls to XPLM Display functions.
         /// </summary>
         /// <returns></returns>
-        XplmSetGraphicsStateFunc const& get_XPLMSetGraphicsStateHandler() const {
+        XPLMGraphicsApi::SetGraphicsStateFunc const& get_XPLMSetGraphicsStateHandler() const {
             return xplm_set_graphics_state_handler_;
         }
 
@@ -107,7 +107,7 @@ namespace gep_xpw_ut {
 
         ~MockXPLMGraphicsProxy();
 
-        XplmSetGraphicsStateFunc xplm_set_graphics_state_handler_;
+        XPLMGraphicsApi::SetGraphicsStateFunc xplm_set_graphics_state_handler_;
 
         static MockXPLMGraphicsProxy* instance_;
 

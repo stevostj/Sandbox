@@ -4,6 +4,7 @@
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
 #include "game_engine_plugin_api.h"
+#include "helper_methods.h"
 #include "xplane_plugin.h"
 #include "xplmdisplay_proxy.h"
 
@@ -45,85 +46,28 @@ namespace {
 	static unsigned char    buffer[WIDTH * HEIGHT * 4];
 	// ---------------
 
+	static int ScreenHeight;
+	static int ScreenWidth;
+
 	void InitializeDrawCanvas()
 	{
-		//// Initialization: allocate a textiure number.
-		//XPLMGenerateTextureNumbers(&g_tex_num, 1);
-		//XPLMBindTexture2d(g_tex_num, 0);
-		//// Init to black for now.
-		//memset(buffer, 0, WIDTH * HEIGHT * 4);
-		//// The first time we must use glTexImage2D.
-		//glTexImage2D(
-		//	GL_TEXTURE_2D,
-		//	0,                   // mipmap level
-		//	GL_RGBA,             // internal format for the GL to use.  (We could ask for a floating point tex or 16-bit tex if we were crazy!)
-		//	WIDTH,
-		//	HEIGHT,
-		//	0,                   // border size
-		//	GL_RGBA,             // format of color we are giving to GL
-		//	GL_UNSIGNED_BYTE,    // encoding of our data
-		//	buffer);
-
-		//// Note: we must set the filtering params to SOMETHING or OpenGL won't draw anything!
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		XplmDisplayApi.GetScreenSize(&ScreenWidth, &ScreenHeight);
 	}
 
 
 	// TODO: Move this into its own file
 	int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon)
-	{
-		// The following code is copied from the hello world xplane plugin
-
-		    // A really dumb bitmap generator - just fill R and G with x and Y based color watch, and the B and alpha channels
-		    // based on mouse position.
-		    int mx, my, sx, sy;
-		    XPLMGetScreenSize(&sx, &sy);
-		    unsigned char* c = buffer;
-		    for (int y = 0; y < HEIGHT; ++y)
-		        for (int x = 0; x < WIDTH; ++x)
-		        {
-		            *c++ = x * 255 / WIDTH;
-		            *c++ = y * 255 / HEIGHT;
-		            *c++ = mx * 255 / sx;
-		            *c++ = my * 255 / sy;
-		        }
-		    XPLMBindTexture2d(g_tex_num, 0);
-
-		    // Note: if the tex size is not changing, glTexSubImage2D is faster than glTexImage2D.
-		    glTexSubImage2D(GL_TEXTURE_2D,
-		        0,                       // mipmap level
-		        0,                       // x-offset
-		        0,                       // y-offset
-		        WIDTH,
-		        HEIGHT,
-		        GL_RGBA,                 // color of data we are seding
-		        GL_UNSIGNED_BYTE,        // encoding of data we are sending
-		        buffer);
+	{	
+		XplmGraphicsApi.SetGraphicsState(
+		    0,        // No fog, equivalent to glDisable(GL_FOG);
+		    1,        // One texture, equivalent to glEnable(GL_TEXTURE_2D);
+		    0,        // No lighting, equivalent to glDisable(GL_LIGHT0);
+		    0,        // No alpha testing, e.g glDisable(GL_ALPHA_TEST);
+		    1,        // Use alpha blending, e.g. glEnable(GL_BLEND);
+		    0,        // No depth read, e.g. glDisable(GL_DEPTH_TEST);
+		    0);        // No depth write, e.g. glDepthMask(GL_FALSE);
 		
-		    // The drawing part.
-		    XPLMSetGraphicsState(
-		        0,        // No fog, equivalent to glDisable(GL_FOG);
-		        1,        // One texture, equivalent to glEnable(GL_TEXTURE_2D);
-		        0,        // No lighting, equivalent to glDisable(GL_LIGHT0);
-		        0,        // No alpha testing, e.g glDisable(GL_ALPHA_TEST);
-		        1,        // Use alpha blending, e.g. glEnable(GL_BLEND);
-		        0,        // No depth read, e.g. glDisable(GL_DEPTH_TEST);
-		        0);        // No depth write, e.g. glDepthMask(GL_FALSE);
-		
-		    glColor3f(1, 1, 1);        // Set color to white.
-		    int x1 = 20;
-		    int y1 = 20;
-		    int x2 = x1 + WIDTH;
-		    int y2 = y1 + HEIGHT;
-		    glBegin(GL_QUADS);
-		    glTexCoord2f(0, 0);        glVertex2f(x1, y1);        // We draw one textured quad.  Note: the first numbers 0,1 are texture coordinates, which are ratios.
-		    glTexCoord2f(0, 1);        glVertex2f(x1, y2);        // lower left is 0,0, upper right is 1,1.  So if we wanted to use the lower half of the texture, we
-		    glTexCoord2f(1, 1);        glVertex2f(x2, y2);        // would use 0,0 to 0,0.5 to 1,0.5, to 1,0.  Note that for X-Plane front facing polygons are clockwise
-		    glTexCoord2f(1, 0);        glVertex2f(x2, y1);        // unless you change it; if you change it, change it back!
-		    glEnd();
-		
-		    return 0;
+		return 0;
 	}
 }
 
@@ -138,11 +82,14 @@ PLUGIN_API int XPluginStart(
 
     hGepHandle = LoadGameEnginePluginLibraries();
 
-	int xpluginstart_rv = (hGepHandle != 0 && XPLMDisplayRegisterDrawCallback != nullptr) ? 1 : 0;
+	int xpluginstart_rv = (hGepHandle != 0 && gep_xpw::CheckHookStructures(XplmDisplayApi, XplmGraphicsApi)) ? 1 : 0;
 	
 	if (xpluginstart_rv != 0)
 	{
-		xpluginstart_rv = XPLMDisplayRegisterDrawCallback(XPLMDrawCallback, xplm_Phase_LastCockpit, 1 /*end of phase*/, nullptr /*TODO: needs to be unique?*/);
+		xpluginstart_rv = XplmDisplayApi.RegisterDrawCallback(XPLMDrawCallback, xplm_Phase_LastCockpit, 1 /*end of phase*/, nullptr /*TODO: needs to be unique?*/);
+	
+		// TODO: Create a 'canvas' class to store this information
+		InitializeDrawCanvas();
 	}
 
 	return xpluginstart_rv;
