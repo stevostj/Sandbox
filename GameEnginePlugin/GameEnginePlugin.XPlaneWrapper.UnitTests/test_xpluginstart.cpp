@@ -8,12 +8,14 @@
 
 #include "xplmgraphics_proxy.h"
 #include "xplmdisplay_proxy.h"
+#include "xplmprocessing_proxy.h"
 
 using ::testing::NotNull;
 using ::testing::_;
 using ::testing::Return;
 using ::testing::DoAll;
 using ::testing::SetArgPointee;
+using ::testing::Ge;
 
 namespace {
 
@@ -75,7 +77,7 @@ namespace {
 
         gep_xpw_ut::MockXPLMDisplayProxy * display_proxy_;
         gep_xpw_ut::MockXPLMGraphicsProxy* graphics_proxy_;
-        //gep_xpw_ut::MockXPLMProcessingProxy* processing_proxy_;
+        gep_xpw_ut::MockXPLMProcessingProxy* processing_proxy_;
 
     private:
 
@@ -102,11 +104,15 @@ TEST_F(PluginTestFixture, TestXPluginStartGEPPresent) {
     XPluginStartFunc xpluginstart_func = (XPluginStartFunc) ::GetProcAddress(hGetProcIDDLL, "XPluginStart");
     EXPECT_NE(xpluginstart_func, (XPluginStartFunc)0); // XPluginStart function found
 
-    // XpluginStart calls wires up the wrapper plugin to respond to drawing callbacks
+    // XpluginStart calls wires up the wrapper plugin to respond to callbacks
     EXPECT_CALL(*display_proxy_, XPLMRegisterDrawCallback(NotNull(), xplm_Phase_LastCockpit, 1 /*end of phase*/, _))
         .WillOnce(Return(1));
 
+    EXPECT_CALL(*processing_proxy_, XPLMRegisterFlightLoopCallback(NotNull(), Ge(0.0f), _))
+        .Times(1);
+
     // The screen size will be retrieved in order to scale symbology
+    // TODO: why is this giving false positive when it is not being called?
     EXPECT_CALL(*display_proxy_, XPLMGetScreenSize(_, _))
         .WillOnce(DoAll(SetArgPointee<0>(100), SetArgPointee<1>(100)));
 

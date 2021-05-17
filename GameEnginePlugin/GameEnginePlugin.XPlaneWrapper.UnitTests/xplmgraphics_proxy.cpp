@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "xplmgraphics_proxy.h"
 
 namespace gep_xpw_ut {
