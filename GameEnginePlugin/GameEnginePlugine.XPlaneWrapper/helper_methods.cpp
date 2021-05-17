@@ -2,7 +2,7 @@
 
 namespace gep_xpw {
 
-	bool CheckHookStructures(XPLMDisplayApi display_api_hooks, XPLMGraphicsApi graphics_api_hooks)
+	bool CheckHookStructures(XPLMDisplayApi display_api_hooks, XPLMGraphicsApi graphics_api_hooks, XPLMProcessingApi processing_api_hooks)
 	{
 		bool display_ok =
 			(display_api_hooks.RegisterDrawCallback != nullptr) &&

@@ -10,5 +10,6 @@ extern std::wstring DllPath;
 
 extern XPLMDisplayApi XplmDisplayApi;
 extern XPLMGraphicsApi XplmGraphicsApi;
+extern XPLMProcessingApi XplmProcessingApi;
 
 #endif

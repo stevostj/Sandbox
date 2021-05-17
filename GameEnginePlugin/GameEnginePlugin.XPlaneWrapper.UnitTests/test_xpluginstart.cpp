@@ -19,7 +19,7 @@ namespace {
 
     typedef int(__stdcall* XPluginStartFunc)(char *, char *, char *);
 
-    typedef int(__stdcall* SetXplmApiHooksFunc)(XPLMDisplayApi, XPLMGraphicsApi);
+    typedef int(__stdcall* SetXplmApiHooksFunc)(XPLMDisplayApi, XPLMGraphicsApi, XPLMProcessingApi);
 
         class PluginTestFixture : public ::testing::Test {
     protected:
@@ -42,8 +42,9 @@ namespace {
             // setxplmapihooks returns error on null callbacks
             XPLMDisplayApi display_api_hooks{};
             XPLMGraphicsApi graphics_api_hooks{};
+            XPLMProcessingApi processing_api_hooks{};
 
-            int setxplmapihooks_rv = setxplmapihooks_func(display_api_hooks, graphics_api_hooks);
+            int setxplmapihooks_rv = setxplmapihooks_func(display_api_hooks, graphics_api_hooks, processing_api_hooks);
             EXPECT_EQ(setxplmapihooks_rv, -1); 
 
             // Hook in alternative functions to XPLM APIs
@@ -54,7 +55,10 @@ namespace {
             graphics_proxy_ = &gep_xpw_ut::MockXPLMGraphicsProxy::get_instance();
             graphics_api_hooks.SetGraphicsState = graphics_proxy_->get_XPLMSetGraphicsStateHandler();
 
-            setxplmapihooks_rv = setxplmapihooks_func(display_api_hooks, graphics_api_hooks);
+            /*processing_proxy_ = &gep_xpw_ut::MockXPLMProcessingProxy::get_instance();
+            processing_api_hooks.SetGraphicsState = processing_proxy_->get_XPLMSetGraphicsStateHandler();*/
+
+            setxplmapihooks_rv = setxplmapihooks_func(display_api_hooks, graphics_api_hooks, processing_api_hooks);
             EXPECT_EQ(setxplmapihooks_rv, SXPLMAH_INITIALIZE_OK); // setxplmapihooks ok
         }
 
@@ -70,8 +74,8 @@ namespace {
         HINSTANCE hGetProcIDDLL = 0;
 
         gep_xpw_ut::MockXPLMDisplayProxy * display_proxy_;
-
         gep_xpw_ut::MockXPLMGraphicsProxy* graphics_proxy_;
+        //gep_xpw_ut::MockXPLMProcessingProxy* processing_proxy_;
 
     private:
 

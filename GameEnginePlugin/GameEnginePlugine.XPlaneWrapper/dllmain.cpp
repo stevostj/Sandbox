@@ -15,6 +15,7 @@ std::wstring DllPathAndName;
 std::wstring DllPath;
 XPLMDisplayApi XplmDisplayApi;
 XPLMGraphicsApi XplmGraphicsApi;
+XPLMProcessingApi XplmProcessingApi;
 
 namespace {
 
@@ -50,7 +51,10 @@ namespace {
         XPLMGraphicsApi graphics_api_hooks;
         graphics_api_hooks.SetGraphicsState = &XPLMSetGraphicsState;
 
-        return SetXplmApiHooks(display_api_hooks, graphics_api_hooks);
+        XPLMProcessingApi processing_api_hooks;
+        processing_api_hooks.RegisterFlightLoopCallback = &XPLMRegisterFlightLoopCallback;
+
+        return SetXplmApiHooks(display_api_hooks, graphics_api_hooks, processing_api_hooks);
     }
 
 }

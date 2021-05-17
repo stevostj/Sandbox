@@ -9,6 +9,7 @@
 
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
+#include "XPLMProcessing.h"
 
 #define SXPLMAH_INITIALIZE_OK 0
 
@@ -34,12 +35,21 @@ extern "C" {
 		SetGraphicsStateFunc SetGraphicsState;
 	};
 
+
+	// Function signatures and pointers to XPLMProcessing API
+	struct XPLMProcessingApi {
+		typedef void(__stdcall* RegisterFlightLoopCallbackFunc)(XPLMFlightLoop_f, float, void*);
+		RegisterFlightLoopCallbackFunc RegisterFlightLoopCallback;
+	};
+
 	/// <summary>
 	/// Passes in alternate pointers to functions to be called instead of the various XPLM functions.
 	/// </summary>
-	/// <param name="display_api_hooks"></param>
+	/// <param name="display_api_hooks">Group of pointers to XPLMDisplay functions. </param>
+	/// <param name="graphics_api_hooks">Group of pointers to XPLMGraphics functions. </param>
+	/// <param name="processing_api_hooks">Group of pointers to XPLMProcessing functions. </param>
 	/// <returns>An error code indicating any problems that occurred while setting the api hooks. </returns>
-	SXPLMAH_DECLSPEC int SetXplmApiHooks(XPLMDisplayApi display_api_hooks, XPLMGraphicsApi graphics_api_hooks);
+	SXPLMAH_DECLSPEC int SetXplmApiHooks(XPLMDisplayApi display_api_hooks, XPLMGraphicsApi graphics_api_hooks, XPLMProcessingApi processing_api_hooks);
 
 #ifdef __cplusplus
 }

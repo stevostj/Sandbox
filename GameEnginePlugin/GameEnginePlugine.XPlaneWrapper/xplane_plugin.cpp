@@ -15,8 +15,6 @@
 
 HINSTANCE hGepHandle; //global
 
-//SymbologyAdapter * symbology_adapter;
-
 namespace {
 
 	HINSTANCE LoadGameEnginePluginLibraries()
@@ -28,24 +26,7 @@ namespace {
 		return ::LoadLibrary((LPWSTR)lib_path.c_str());
 	}
 
-
-	// The following code is copied from the hello world xplane plugin
-	// -------------
-
-	// Our texture dimensions.  Textures MUST be powers of 2 in OpenGL - if you don't need that much space,
-	// just round up to the nearest power of 2.
-	#define WIDTH 128
-	#define HEIGHT 128
-
-	// This is our texture ID.  Texture IDs in OpenGL are just ints...but this is a global for the life of our plugin.
-	static int                g_tex_num = 0;
-
-	// We use this memory to prep the buffer.  Note that this memory DOES NOT have to be global - the memory is FULLY
-	// read by OpenGL before glTexSubImage2D or glTexImage2D return, so you could use local or temporary storage, or
-	// change the image AS SOON as the call returns!  4 bytes for R,G,B,A 32-bit pixels.
-	static unsigned char    buffer[WIDTH * HEIGHT * 4];
-	// ---------------
-
+	// TODO: store this information into an object
 	static int ScreenHeight;
 	static int ScreenWidth;
 
@@ -55,7 +36,7 @@ namespace {
 	}
 
 
-	// TODO: Move this into its own file
+	// TODO: Move this into its own file/class
 	int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon)
 	{	
 		XplmGraphicsApi.SetGraphicsState(
@@ -82,7 +63,7 @@ PLUGIN_API int XPluginStart(
 
     hGepHandle = LoadGameEnginePluginLibraries();
 
-	int xpluginstart_rv = (hGepHandle != 0 && gep_xpw::CheckHookStructures(XplmDisplayApi, XplmGraphicsApi)) ? 1 : 0;
+	int xpluginstart_rv = (hGepHandle != 0 && gep_xpw::CheckHookStructures(XplmDisplayApi, XplmGraphicsApi, XplmProcessingApi)) ? 1 : 0;
 	
 	if (xpluginstart_rv != 0)
 	{
