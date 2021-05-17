@@ -24,4 +24,4 @@ A host application ingests instances of a game engine plugin and interacts with 
 
 ![](./XPlaneWrapper.png)
 
-![](./GameEnginePlugin-XPlaneIntegration.png)
+![](./XPlaneWrapper-Initialization.png)

@@ -7,7 +7,7 @@ frame "XPlane" as HA {
 [Game Engine Plugin] as GEP
 () "IGameEnginePlugin" as IGEP
 () "XPlugin" as IXP
-() "XPLMAPIHooks" as IXPLMAPI
+() "SetXplmApiHooks" as IXPLMAPI
 }
 
 note left of HA

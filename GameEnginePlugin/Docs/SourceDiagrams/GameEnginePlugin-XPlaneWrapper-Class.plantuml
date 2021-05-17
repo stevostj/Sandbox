@@ -6,17 +6,29 @@ interface "IGameEnginePlugin"  as IGEP {
     + {static} int GEP Initialize()
 }
 
-class XPLMDisplayRegisterDrawCallbackFunc{
-
+class "XPLMDisplayApi" as XDA {
+  RegisterDrawCallbackFunc
+  GetScreenSizeFunc
 }
 
-class "XPlaneWrapper"  as XPW {
-    + {static} int XPluginStart(char *, char *, char *)
+class "XPLMGraphicsApi" as XGA {
+  SetGraphicsStateFunc
+}
 
-    + {static} SetXplmApiHooks(XPLMDisplayRegisterDrawCallbackFunc)
+class "XPLMProcessingApi" as XPA {
+  RegisterFlightLoopCallbackFunc
+}
 
+class "XPlaneWrapperFreeFunctions"  as XPW {
+    + {static} <<extern C>> int XPluginStart(char *, char *, char *)
+    + {static} <<extern C>> SetXplmApiHooks(XPLMDisplayApi, XPLMGraphicsApi, XPLMProcessingApi)
 }
 
 XPW o-- IGEP
+
+XPW -- XDA
+XPW -- XGA
+XPW -- XPA
+
 
 @enduml

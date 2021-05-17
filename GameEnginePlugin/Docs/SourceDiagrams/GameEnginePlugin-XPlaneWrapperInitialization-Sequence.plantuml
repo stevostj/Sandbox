@@ -2,57 +2,88 @@
 
 title "XPlaneWrapper-Initialization"
 
-participant "XPlaneWrapperHost" as HA
+participant "XPlaneWrapperHost" as XPWH
 
-HA -> HA: Initialization
-activate HA
+XPWH -> XPWH: Initialization
+activate XPWH
 
-create participant "XPlaneWrapper" as HAI
-HA -> HAI: new (via LoadLibrary)
-HA -> HAI: dllmain
-activate HAI
-HAI -> HAI: StoreGlobalPathVariables()
+create participant "XPlaneWrapper" as XPW
+XPWH -> XPW: new (via LoadLibrary)
+XPWH -> XPW: dllmain
+activate XPW
+XPW -> XPW: StoreGlobalPathVariables()
 note right
 determines the filepath of the xplane plugin
 so that the inner game engine plugins can
 be loaded in an XPlane or unit test context
 end note
-HAI -> HAI: SetDefaultXplmApiHooks()
+XPW -> XPW: SetDefaultXplmApiHooks()
 note right
-api_hooks = XPLM APIs
+global api_hooks = XPLM APIs
 end note
-HAI --> HA
-deactivate HAI
+XPW --> XPWH
+
+XPW -> XPW: SetDefaultGraphicsRenderer()
+note right
+global api_hooks = XPLM APIs
+end note
+XPW --> XPWH
+
+deactivate XPW
 
 alt Not XPlane Application
-HA -> HAI: SetXplmApiHooks(function_pointers)
+XPWH -> XPW: SetXplmApiHooks(function_pointers)
 note right
-api_hooks = function_pointers
+global api_hooks = function_pointers
 this allows for mocking out of 
 XPLM APIs for testing
 end note
-activate HAI
-HAI --> HA
-deactivate HAI
+activate XPW
+XPW --> XPWH
+deactivate XPW
+
+XPWH -> XPW: SetGraphicsRenderer(graphics_renderer)
+note right
+global graphics_renderer = function_pointers
+this allows for 'stubbing out' a simple api
+to render symbology for testing purposes.
+
+In a test host context, OpenGL call aren't practical to execute.
+end note
+activate XPW
+XPW --> XPWH
+deactivate XPW
 end
 
-HA -> HAI: XPluginStart
-activate HAI
-ref over HAI
-Game Engine Plugin Lifecycle
+XPWH -> XPW: XPluginStart
+activate XPW
+ref over XPW
+Game Engine Plugin Lifecycle GEP_Initialize
 end ref
 
-HAI -> HAI: InitializeRenderingCanvas()
-activate HAI
-HAI -> HA: api_hooks.XPLMDisplay.RegisterDrawCallback
-activate HA
-HA --> HAI
-deactivate HA
+activate XPW
+XPW -> XPW: InitializeSymbologyRendering()
+activate XPW
+XPW -> XPWH: api_hooks.XPLMDisplay.RegisterDrawCallback
+activate XPWH
+XPWH --> XPW
+deactivate XPWH
+deactivate XPW
 
-HAI --> HA
-deactivate HAI
+XPW -> XPW: InitializeSimulationFrameHandler()
+activate XPW
+XPW -> XPWH: api_hooks.XPLMProcessing.XPLMRegisterFlightLoopCallback
+activate XPWH
+XPWH --> XPW
+deactivate XPWH
+deactivate XPW
 
-deactivate HA
+XPW --> XPWH
+deactivate XPW
+
+
+
+deactivate XPWH
 
 
 @enduml
