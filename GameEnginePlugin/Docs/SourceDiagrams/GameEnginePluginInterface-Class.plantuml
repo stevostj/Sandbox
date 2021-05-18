@@ -3,7 +3,7 @@
 title "GameEnginePluginInterface"
 
 interface "IGameEnginePlugin"  as IGEP {
-    + {static} int GEP_Initialize()
+    + {static} <<extern C>> int GEP_Initialize()
 }
 
 @enduml

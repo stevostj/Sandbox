@@ -57,8 +57,8 @@ namespace {
             graphics_proxy_ = &gep_xpw_ut::MockXPLMGraphicsProxy::get_instance();
             graphics_api_hooks.SetGraphicsState = graphics_proxy_->get_XPLMSetGraphicsStateHandler();
 
-            /*processing_proxy_ = &gep_xpw_ut::MockXPLMProcessingProxy::get_instance();
-            processing_api_hooks.SetGraphicsState = processing_proxy_->get_XPLMSetGraphicsStateHandler();*/
+            processing_proxy_ = &gep_xpw_ut::MockXPLMProcessingProxy::get_instance();
+            processing_api_hooks.RegisterFlightLoopCallback = processing_proxy_->get_XPLMRegisterFlightLoopCallbackHandler();
 
             setxplmapihooks_rv = setxplmapihooks_func(display_api_hooks, graphics_api_hooks, processing_api_hooks);
             EXPECT_EQ(setxplmapihooks_rv, SXPLMAH_INITIALIZE_OK); // setxplmapihooks ok
