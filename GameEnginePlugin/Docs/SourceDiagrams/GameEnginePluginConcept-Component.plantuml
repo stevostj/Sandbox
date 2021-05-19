@@ -1,6 +1,6 @@
 @startuml
 
-title "Game Engine Plugin Concept"
+title "GameEnginePluginConcept"
 
 frame "Host Application" as HA {
 [Host Application Interop] as HAI

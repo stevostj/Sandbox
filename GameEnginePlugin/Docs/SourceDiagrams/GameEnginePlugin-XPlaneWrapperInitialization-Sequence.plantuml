@@ -1,0 +1,73 @@
+@startuml
+
+title "XPlaneWrapper-Initialization"
+
+participant "XPlaneWrapperHost" as XPWH
+
+XPWH -> XPWH: Initialization
+activate XPWH
+
+create participant "XPlaneWrapper" as XPW
+XPWH -> XPW: new (via LoadLibrary)
+XPWH -> XPW: dllmain
+activate XPW
+XPW -> XPW: StoreGlobalPathVariables()
+note right
+determines the filepath of the xplane plugin
+so that the inner game engine plugins can
+be loaded in an XPlane or unit test context
+end note
+XPW -> XPW: SetDefaultXplmApiHooks()
+note right
+global api_hooks = XPLM APIs
+end note
+XPW --> XPWH
+
+deactivate XPW
+
+alt Not XPlane Application
+
+XPWH -> XPW: SetXplmApiHooks(function_pointers)
+note right
+global api_hooks = function_pointers
+this allows for mocking out of 
+XPLM APIs for testing
+end note
+activate XPW
+XPW --> XPWH
+deactivate XPW
+
+end
+
+XPWH -> XPW: XPluginStart
+activate XPW
+ref over XPW
+Game Engine Plugin Lifecycle GEP_Initialize
+end ref
+
+activate XPW
+XPW -> XPW: InitializeSymbologyRendering()
+activate XPW
+XPW -> XPWH: api_hooks.XPLMDisplay.RegisterDrawCallback
+activate XPWH
+XPWH --> XPW
+deactivate XPWH
+deactivate XPW
+
+XPW -> XPW: InitializeSimulationFrameHandler()
+activate XPW
+XPW -> XPWH: api_hooks.XPLMProcessing.XPLMRegisterFlightLoopCallback
+activate XPWH
+XPWH --> XPW
+deactivate XPWH
+deactivate XPW
+
+XPW --> XPWH
+deactivate XPW
+
+
+
+deactivate XPWH
+
+
+@enduml

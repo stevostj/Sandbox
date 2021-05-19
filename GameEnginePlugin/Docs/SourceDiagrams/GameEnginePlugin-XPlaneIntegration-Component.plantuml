@@ -1,0 +1,27 @@
+@startuml
+
+title "GameEnginePlugin-XPlaneIntegration"
+
+frame "XPlane" as HA {
+[Game Engine Plugin \nXPlane Wrapper] as XPW
+[Game Engine Plugin] as GEP
+() "IGameEnginePlugin" as IGEP
+() "XPlugin" as IXP
+() "SetXplmApiHooks" as IXPLMAPI
+}
+
+note left of HA
+A test host can be used in place
+of XPlane to proxy the XPLM APIs
+that an XPlane plugin would normally call.
+end note
+
+IGEP -- GEP
+
+IXP -- XPW
+IXPLMAPI -- XPW
+
+XPW <..> IGEP
+
+
+@enduml

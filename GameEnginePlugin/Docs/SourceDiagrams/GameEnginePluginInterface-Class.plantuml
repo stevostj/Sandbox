@@ -1,0 +1,9 @@
+@startuml
+
+title "GameEnginePluginInterface"
+
+interface "IGameEnginePlugin"  as IGEP {
+    + {static} <<extern C>> int GEP_Initialize()
+}
+
+@enduml
