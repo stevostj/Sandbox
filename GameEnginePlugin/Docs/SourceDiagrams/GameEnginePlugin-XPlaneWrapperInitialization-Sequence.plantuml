@@ -23,15 +23,10 @@ global api_hooks = XPLM APIs
 end note
 XPW --> XPWH
 
-XPW -> XPW: SetDefaultGraphicsRenderer()
-note right
-global api_hooks = XPLM APIs
-end note
-XPW --> XPWH
-
 deactivate XPW
 
 alt Not XPlane Application
+
 XPWH -> XPW: SetXplmApiHooks(function_pointers)
 note right
 global api_hooks = function_pointers
@@ -42,17 +37,6 @@ activate XPW
 XPW --> XPWH
 deactivate XPW
 
-XPWH -> XPW: SetGraphicsRenderer(graphics_renderer)
-note right
-global graphics_renderer = function_pointers
-this allows for 'stubbing out' a simple api
-to render symbology for testing purposes.
-
-In a test host context, OpenGL call aren't practical to execute.
-end note
-activate XPW
-XPW --> XPWH
-deactivate XPW
 end
 
 XPWH -> XPW: XPluginStart

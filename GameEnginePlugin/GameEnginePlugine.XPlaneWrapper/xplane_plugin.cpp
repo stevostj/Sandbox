@@ -19,37 +19,54 @@ namespace {
 
 	HINSTANCE LoadGameEnginePluginLibraries()
 	{
-
 		// TODO: find plugin(s) in the directory instead of hardcoding the name.
 		std::wstring lib_path = DllPath + L"\\ExampleGameEnginePlugin.dll";
 
 		return ::LoadLibrary((LPWSTR)lib_path.c_str());
 	}
 
+
+	// TODO: Move this into its own file/class
+	int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon)
+	{
+		XplmGraphicsApi.SetGraphicsState(
+			0,        // No fog, equivalent to glDisable(GL_FOG);
+			1,        // One texture, equivalent to glEnable(GL_TEXTURE_2D);
+			0,        // No lighting, equivalent to glDisable(GL_LIGHT0);
+			0,        // No alpha testing, e.g glDisable(GL_ALPHA_TEST);
+			1,        // Use alpha blending, e.g. glEnable(GL_BLEND);
+			0,        // No depth read, e.g. glDisable(GL_DEPTH_TEST);
+			0);        // No depth write, e.g. glDepthMask(GL_FALSE);
+
+		return 0;
+	}
+
+	// TODO: Move this into its own file/class
+	float XPLMFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSinceLastFlightLoop, int inCounter, void* inRefcon)
+	{
+		// TODO: convert xplane state information to structures to pass into game engine plugins.
+
+		return -1.0; // schedules xplane to call this function in the next flight loop
+	}
+
 	// TODO: store this information into an object
 	static int ScreenHeight;
 	static int ScreenWidth;
 
-	void InitializeDrawCanvas()
+	int InitializeSymbologyRendering()
 	{
+		int rv = XplmDisplayApi.RegisterDrawCallback(XPLMDrawCallback, xplm_Phase_LastCockpit, 1 /*end of phase*/, nullptr);
 		XplmDisplayApi.GetScreenSize(&ScreenWidth, &ScreenHeight);
+
+		return rv;
+	}
+
+	void InitializeSimulationFrameHandler() 
+	{
+		XplmProcessingApi.RegisterFlightLoopCallback(XPLMFlightLoopCallback, -1.0 /* schedule for first flight loop */, nullptr);
 	}
 
 
-	// TODO: Move this into its own file/class
-	int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon)
-	{	
-		XplmGraphicsApi.SetGraphicsState(
-		    0,        // No fog, equivalent to glDisable(GL_FOG);
-		    1,        // One texture, equivalent to glEnable(GL_TEXTURE_2D);
-		    0,        // No lighting, equivalent to glDisable(GL_LIGHT0);
-		    0,        // No alpha testing, e.g glDisable(GL_ALPHA_TEST);
-		    1,        // Use alpha blending, e.g. glEnable(GL_BLEND);
-		    0,        // No depth read, e.g. glDisable(GL_DEPTH_TEST);
-		    0);        // No depth write, e.g. glDepthMask(GL_FALSE);
-		
-		return 0;
-	}
 }
 
 PLUGIN_API int XPluginStart(
@@ -66,12 +83,10 @@ PLUGIN_API int XPluginStart(
 	int xpluginstart_rv = (hGepHandle != 0 && gep_xpw::CheckHookStructures(XplmDisplayApi, XplmGraphicsApi, XplmProcessingApi)) ? 1 : 0;
 	
 	if (xpluginstart_rv != 0)
-	{
-		xpluginstart_rv = XplmDisplayApi.RegisterDrawCallback(XPLMDrawCallback, xplm_Phase_LastCockpit, 1 /*end of phase*/, nullptr /*TODO: needs to be unique?*/);
-	
-		// TODO: Create a 'canvas' class to store this information
-		InitializeDrawCanvas();
-	}
+		xpluginstart_rv = InitializeSymbologyRendering(); // TODO: Create a 'canvas' class to store this information
+
+	if(xpluginstart_rv != 0)
+	  InitializeSimulationFrameHandler();
 
 	return xpluginstart_rv;
 }
@@ -79,8 +94,6 @@ PLUGIN_API int XPluginStart(
 PLUGIN_API void	XPluginStop(void)
 {
 	// TODO: Clean up resources
-	//delete symbology_adapter;
-	//symbology_adapter = nullptr;
 }
 
 PLUGIN_API void XPluginDisable(void) { }
