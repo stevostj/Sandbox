@@ -1,0 +1,50 @@
+@startuml
+
+title "XPlaneWrapper-Execution"
+
+participant "XPlaneWrapperHost" as XPWH
+participant "XPlaneWrapper" as XPW
+participant "GameEnginePlugin" as GEP
+
+loop 
+XPWH -> XPWH: Redraw Scene
+activate XPWH
+
+XPWH -> XPW: DrawCallback
+activate XPW
+XPW -> XPW: StoreRenderingFrameResponses as RESPONSES
+XPW -> XPWH: api_hooks.XPLMGraphics.SetGraphicsState
+activate XPWH
+XPWH --> XPW
+deactivate XPWH
+XPW -> XPW: RenderCachedSymbology(SYMBOLS)
+XPW -> XPW: GenerateSoFMessages(RESPONSES, SHMSG) as SOFMSG
+XPW -> GEP: HandleStartofFrameMessages(SOFMSG)
+activate GEP
+GEP -> GEP: Store SOFMSG as GEP.RESPONSES
+GEP --> XPW
+deactivate GEP
+XPW --> XPWH
+deactivate XPW
+deactivate XPWH
+
+...
+
+XPWH -> XPWH: Execute Flight Loop
+activate XPWH
+
+XPWH -> XPW: FlightLoopCallback
+activate XPW
+XPW -> XPW: GenerateSimHostMessages(RESPONSES) as SHMSG
+XPW -> GEP: HandleSimulationHostMessages(SHMSG)
+activate GEP
+GEP --> XPW
+deactivate GEP
+XPW -> XPW: Store SHMSG Symbology Messages as SYMBOLS
+XPW --> XPWH
+deactivate XPW
+deactivate XPWH
+
+end
+
+@enduml

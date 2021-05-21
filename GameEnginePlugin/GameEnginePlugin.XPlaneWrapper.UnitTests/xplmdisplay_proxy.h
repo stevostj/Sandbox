@@ -21,6 +21,8 @@ namespace gep_xpw_ut {
             int                  inWantsBefore,
             void* inRefcon) = 0;
 
+        virtual XPLMDrawCallback_f get_XPLMDrawCallback() = 0;
+
         virtual void XPLMGetScreenSize(
             int* outWidth, 
             int* outHeight) = 0;
@@ -100,6 +102,8 @@ namespace gep_xpw_ut {
             XPLMDrawingPhase     inPhase,
             int                  inWantsBefore,
             void* inRefcon), (override));
+
+        MOCK_METHOD(XPLMDrawCallback_f, get_XPLMDrawCallback, (), (override));
 
         MOCK_METHOD(void, XPLMGetScreenSize, (
             int* outWidth, 
