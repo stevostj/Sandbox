@@ -5,7 +5,7 @@
 
 namespace gep_xpw {
 
-	bool CheckHookStructures(XPLMDisplayApi display_api_hooks, XPLMGraphicsApi graphics_api_hooks, XPLMProcessingApi processing_api_hooks);
+	bool CheckHookStructures(XPLMDisplayApi const * display_api_hooks, XPLMGraphicsApi const * graphics_api_hooks, XPLMProcessingApi const * processing_api_hooks);
 
 }
 

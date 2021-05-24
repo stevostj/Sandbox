@@ -15,6 +15,30 @@
 
 HINSTANCE hGepHandle; //global
 
+
+	// TODO: Move this into its own file/class
+int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon)
+{
+	XplmGraphicsApi.SetGraphicsState(
+		0,        // No fog, equivalent to glDisable(GL_FOG);
+		1,        // One texture, equivalent to glEnable(GL_TEXTURE_2D);
+		0,        // No lighting, equivalent to glDisable(GL_LIGHT0);
+		0,        // No alpha testing, e.g glDisable(GL_ALPHA_TEST);
+		1,        // Use alpha blending, e.g. glEnable(GL_BLEND);
+		0,        // No depth read, e.g. glDisable(GL_DEPTH_TEST);
+		0);        // No depth write, e.g. glDepthMask(GL_FALSE);
+
+	return 1;
+}
+
+// TODO: Move this into its own file/class
+float XPLMFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSinceLastFlightLoop, int inCounter, void* inRefcon)
+{
+	// TODO: convert xplane state information to structures to pass into game engine plugins.
+
+	return -1.0; // schedules xplane to call this function in the next flight loop
+}
+
 namespace {
 
 	HINSTANCE LoadGameEnginePluginLibraries()
@@ -26,29 +50,6 @@ namespace {
 	}
 
 
-	// TODO: Move this into its own file/class
-	int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon)
-	{
-		XplmGraphicsApi.SetGraphicsState(
-			0,        // No fog, equivalent to glDisable(GL_FOG);
-			1,        // One texture, equivalent to glEnable(GL_TEXTURE_2D);
-			0,        // No lighting, equivalent to glDisable(GL_LIGHT0);
-			0,        // No alpha testing, e.g glDisable(GL_ALPHA_TEST);
-			1,        // Use alpha blending, e.g. glEnable(GL_BLEND);
-			0,        // No depth read, e.g. glDisable(GL_DEPTH_TEST);
-			0);        // No depth write, e.g. glDepthMask(GL_FALSE);
-
-		return 0;
-	}
-
-	// TODO: Move this into its own file/class
-	float XPLMFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSinceLastFlightLoop, int inCounter, void* inRefcon)
-	{
-		// TODO: convert xplane state information to structures to pass into game engine plugins.
-
-		return -1.0; // schedules xplane to call this function in the next flight loop
-	}
-
 	// TODO: store this information into an object
 	static int ScreenHeight;
 	static int ScreenWidth;
@@ -56,6 +57,7 @@ namespace {
 	int InitializeSymbologyRendering()
 	{
 		int rv = XplmDisplayApi.RegisterDrawCallback(XPLMDrawCallback, xplm_Phase_LastCockpit, 1 /*end of phase*/, nullptr);
+		XplmDisplayApi.DrawCallback = XPLMDrawCallback;
 		XplmDisplayApi.GetScreenSize(&ScreenWidth, &ScreenHeight);
 
 		return rv;
@@ -80,7 +82,7 @@ PLUGIN_API int XPluginStart(
 
     hGepHandle = LoadGameEnginePluginLibraries();
 
-	int xpluginstart_rv = (hGepHandle != 0 && gep_xpw::CheckHookStructures(XplmDisplayApi, XplmGraphicsApi, XplmProcessingApi)) ? 1 : 0;
+	int xpluginstart_rv = (hGepHandle != 0 && gep_xpw::CheckHookStructures(&XplmDisplayApi, &XplmGraphicsApi, &XplmProcessingApi)) ? 1 : 0;
 	
 	if (xpluginstart_rv != 0)
 		xpluginstart_rv = InitializeSymbologyRendering(); // TODO: Create a 'canvas' class to store this information

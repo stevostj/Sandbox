@@ -43,7 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test_xplugincallbacks.cpp" />
-    <ClCompile Include="test_xpluginstart.cpp" />
     <ClCompile Include="xlmprocessing_proxy.cpp" />
     <ClCompile Include="xplmdisplay_proxy.cpp" />
     <ClCompile Include="xplmgraphics_proxy.cpp" />

@@ -9,15 +9,21 @@ namespace gep_xpw {
 	/// <param name="graphics_api_hooks"></param>
 	/// <param name="processing_api_hooks"></param>
 	/// <returns></returns>
-	bool CheckHookStructures(XPLMDisplayApi display_api_hooks, XPLMGraphicsApi graphics_api_hooks, XPLMProcessingApi processing_api_hooks)
+	bool CheckHookStructures(XPLMDisplayApi const * display_api_hooks, XPLMGraphicsApi const *graphics_api_hooks, XPLMProcessingApi const * processing_api_hooks)
 	{
 		bool display_ok =
-			(display_api_hooks.RegisterDrawCallback != nullptr) &&
-			(display_api_hooks.GetScreenSize != nullptr);
+			(display_api_hooks != nullptr) && 
+			(display_api_hooks->RegisterDrawCallback != nullptr) &&
+			(display_api_hooks->GetScreenSize != nullptr);
 
 		bool graphics_ok =
-			(graphics_api_hooks.SetGraphicsState != nullptr);
+			(graphics_api_hooks != nullptr) && 
+			(graphics_api_hooks->SetGraphicsState != nullptr);
 
-		return display_ok && graphics_ok;
+		bool processing_ok =
+			(processing_api_hooks != nullptr) &&
+			(processing_api_hooks->RegisterFlightLoopCallback != nullptr);
+
+		return display_ok && graphics_ok && processing_ok;
 	}
 }

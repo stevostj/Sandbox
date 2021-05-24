@@ -45,16 +45,14 @@ namespace {
     /// </summary>
     int SetDefaultXplmApiHooks() 
     {
-        XPLMDisplayApi display_api_hooks;
-        display_api_hooks.RegisterDrawCallback = &XPLMRegisterDrawCallback;
+        XplmDisplayApi.RegisterDrawCallback = &XPLMRegisterDrawCallback;
+        XplmDisplayApi.GetScreenSize = &XPLMGetScreenSize;
 
-        XPLMGraphicsApi graphics_api_hooks;
-        graphics_api_hooks.SetGraphicsState = &XPLMSetGraphicsState;
+        XplmGraphicsApi.SetGraphicsState = &XPLMSetGraphicsState;
 
-        XPLMProcessingApi processing_api_hooks;
-        processing_api_hooks.RegisterFlightLoopCallback = &XPLMRegisterFlightLoopCallback;
+        XplmProcessingApi.RegisterFlightLoopCallback = &XPLMRegisterFlightLoopCallback;
 
-        return SetXplmApiHooks(display_api_hooks, graphics_api_hooks, processing_api_hooks);
+        return SetXplmApiHooks(&XplmDisplayApi, &XplmGraphicsApi, &XplmProcessingApi);
     }
 
 }

@@ -6,26 +6,43 @@
 
 #include "set_xplm_api_hooks.h"
 
+using ::testing::NotNull;
+using ::testing::_;
+using ::testing::Return;
+using ::testing::DoAll;
+using ::testing::SetArgPointee;
+using ::testing::Ge;
+using ::testing::Ne;
+
+
 namespace gep_xpw_ut {
 
     /// <summary>
     /// Abstract base class for XPLMDisplay proxy implementations. 
     /// </summary>
-    class XPLMDisplayProxy
-    {
-    public:
+    class XPLMDisplayProxy {
+     public:
 
         virtual int XPLMRegisterDrawCallback(
-            XPLMDrawCallback_f   inCallback,
-            XPLMDrawingPhase     inPhase,
-            int                  inWantsBefore,
-            void* inRefcon) = 0;
-
-        virtual XPLMDrawCallback_f get_XPLMDrawCallback() = 0;
+            XPLMDrawCallback_f inCallback, XPLMDrawingPhase inPhase, int inWantsBefore, void* inRefcon) = 0;
 
         virtual void XPLMGetScreenSize(
             int* outWidth, 
             int* outHeight) = 0;
+
+        XPLMDisplayApi & get_XPLMDisplayApi() {
+            return xplm_display_api_;
+        }
+
+     protected:
+         XPLMDisplayProxy() {
+             xplm_display_api_.DrawCallback = nullptr;
+             xplm_display_api_.RegisterDrawCallback = nullptr;
+             xplm_display_api_.GetScreenSize = nullptr;
+         }
+
+     private:
+         XPLMDisplayApi xplm_display_api_;
 
     };
 
@@ -103,8 +120,6 @@ namespace gep_xpw_ut {
             int                  inWantsBefore,
             void* inRefcon), (override));
 
-        MOCK_METHOD(XPLMDrawCallback_f, get_XPLMDrawCallback, (), (override));
-
         MOCK_METHOD(void, XPLMGetScreenSize, (
             int* outWidth, 
             int* outHeight), (override)); 
@@ -118,15 +133,15 @@ namespace gep_xpw_ut {
     private:
         MockXPLMDisplayProxy() : 
             xplm_register_draw_callback_handler_(MockXPLMDisplayProxy::HandleXPLMRegisterDrawCallback), 
-            xplm_get_screen_size_handler_(MockXPLMDisplayProxy::HandleXPLMGetScreenSize)
-        {}
+            xplm_get_screen_size_handler_(MockXPLMDisplayProxy::HandleXPLMGetScreenSize) 
+        {
+        }
 
         ~MockXPLMDisplayProxy();
 
         XPLMDisplayApi::RegisterDrawCallbackFunc xplm_register_draw_callback_handler_;
 
         XPLMDisplayApi::GetScreenSizeFunc xplm_get_screen_size_handler_;
-
 
         static MockXPLMDisplayProxy* instance_;
 

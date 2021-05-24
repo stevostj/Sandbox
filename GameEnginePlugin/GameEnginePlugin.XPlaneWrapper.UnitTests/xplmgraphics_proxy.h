@@ -23,6 +23,18 @@ namespace gep_xpw_ut {
             int                  inEnableAlphaBlending,
             int                  inEnableDepthTesting,
             int                  inEnableDepthWriting) = 0;
+
+        XPLMGraphicsApi & get_XPLMGraphicsApi() {
+            return xplm_graphics_api_;
+        }
+
+    protected:
+        XPLMGraphicsProxy() {
+            xplm_graphics_api_.SetGraphicsState = nullptr;
+        }
+
+    private:
+        XPLMGraphicsApi xplm_graphics_api_;
     };
 
     /// <summary>

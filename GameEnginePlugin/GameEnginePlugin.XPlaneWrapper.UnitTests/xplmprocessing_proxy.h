@@ -11,14 +11,27 @@ namespace gep_xpw_ut {
     /// <summary>
     /// Abstract base class for XPLMProcessing proxy implementations. 
     /// </summary>
-    class XPLMProcessingProxy
-    {
+    class XPLMProcessingProxy {
     public:
 
         virtual void XPLMRegisterFlightLoopCallback(
             XPLMFlightLoop_f     inFlightLoop,
             float                inInterval,
             void* inRefcon) = 0;
+
+
+        XPLMProcessingApi & get_XPLMProcessingApi() {
+            return xplm_processing_api_;
+        }
+
+    protected:
+        XPLMProcessingProxy() {
+            xplm_processing_api_.RegisterFlightLoopCallback = nullptr;
+            xplm_processing_api_.RegisterFlightLoopCallback = nullptr;
+        }
+
+    private:
+        XPLMProcessingApi xplm_processing_api_;
     };
 
     /// <summary>

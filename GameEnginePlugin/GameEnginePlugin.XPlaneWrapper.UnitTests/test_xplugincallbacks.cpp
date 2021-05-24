@@ -19,16 +19,14 @@ using ::testing::Ne;
 
 namespace gep_xpw_ut {
 
-    TEST_F(XPluginTestFixture, TestXPluginDrawCallbackSetsGraphicsState) {
-
-        // TODO: Set up the mock to return a valid draw callback when it is registered. 
-
+    TEST_F(XPluginTestFixture, TestXPluginDrawCallbackSetsGraphicsState) 
+    {
 
         // Each time XPlane triggers draw callbacks, the XPLMGraphics SetGraphicsState function will be called
         // to 'reset the canvas'. 
         EXPECT_CALL(*graphics_proxy_, XPLMSetGraphicsState(0, _, 0, _, _, _, _));
 
-        XPLMDrawCallback_f draw_cb = display_proxy_->get_XPLMDrawCallback();
+        XPLMDrawCallback_f draw_cb = display_proxy_->get_XPLMDisplayApi().DrawCallback;
         EXPECT_NE(draw_cb, nullptr);
 
         int draw_rv = draw_cb(xplm_Phase_LastCockpit, 0, nullptr);
