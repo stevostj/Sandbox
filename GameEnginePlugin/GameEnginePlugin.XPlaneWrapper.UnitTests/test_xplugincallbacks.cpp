@@ -32,6 +32,8 @@ namespace gep_xpw_ut {
         int draw_rv = draw_cb(xplm_Phase_LastCockpit, 0, nullptr);
         EXPECT_NE(draw_rv, 0);
 
+        EXPECT_CALL(*gep_proxy_, GEP_HandleStartOfFrameMessages(NotNull(), NotNull()));
+
     }
 
 }

@@ -112,7 +112,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\XPlane\SDK\CHeaders\XPLM;..\XPlane\SDK\CHeaders\Widgets;..\GameEnginePlugin.Shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>X64;_DEBUG;_WINDOWS;IBM=1;XPLM200=1;XPLM210=1;XPLM300=1;XPLM301=1;XPLM302=1;XPLM303=1;_EXPORTSXPLMAH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>X64;_DEBUG;_WINDOWS;IBM=1;XPLM200=1;XPLM210=1;XPLM300=1;XPLM301=1;XPLM302=1;XPLM303=1;_EXPORTSXPLMAH;_EXPORTSGEPAH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\64\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\Debug\64\$(TargetName).pch</PrecompiledHeaderOutputFile>
       <PrecompiledHeader>

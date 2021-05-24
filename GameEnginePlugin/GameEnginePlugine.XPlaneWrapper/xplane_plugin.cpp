@@ -16,7 +16,7 @@
 HINSTANCE hGepHandle; //global
 
 
-	// TODO: Move this into its own file/class
+// TODO: Move this into its own file/class
 int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon)
 {
 	XplmGraphicsApi.SetGraphicsState(

@@ -16,6 +16,8 @@ extern "C" {
 
 GEP_DECLSPEC int GEP_Initialize();
 
+GEP_DECLSPEC int GEP_HandleStartOfFrameMessages(char ** messages_in, char ** messages_out);
+
 #ifdef __cplusplus
 }
 #endif

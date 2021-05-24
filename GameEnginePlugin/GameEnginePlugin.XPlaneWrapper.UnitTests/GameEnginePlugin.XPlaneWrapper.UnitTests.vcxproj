@@ -36,12 +36,14 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
+    <ClInclude Include="gep_proxy.h" />
     <ClInclude Include="xplmdisplay_proxy.h" />
     <ClInclude Include="xplmgraphics_proxy.h" />
     <ClInclude Include="xplmprocessing_proxy.h" />
     <ClInclude Include="xplugin_test_fixture.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="gep_proxy.cpp" />
     <ClCompile Include="test_xplugincallbacks.cpp" />
     <ClCompile Include="xlmprocessing_proxy.cpp" />
     <ClCompile Include="xplmdisplay_proxy.cpp" />

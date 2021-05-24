@@ -3,11 +3,11 @@
 title "XPlaneWrapper"
 
 interface "IGameEnginePlugin"  as IGEP {
-    + {static} int GEP Initialize()
 }
 
 class "XPLMDisplayApi" as XDA {
   RegisterDrawCallbackFunc
+  DrawCallback
   GetScreenSizeFunc
 }
 
@@ -17,6 +17,7 @@ class "XPLMGraphicsApi" as XGA {
 
 class "XPLMProcessingApi" as XPA {
   RegisterFlightLoopCallbackFunc
+  FlightLoopCallback
 }
 
 class "XPlaneWrapperFreeFunctions"  as XPW {
