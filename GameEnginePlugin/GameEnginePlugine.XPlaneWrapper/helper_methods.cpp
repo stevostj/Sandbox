@@ -26,4 +26,20 @@ namespace gep_xpw {
 
 		return display_ok && graphics_ok && processing_ok;
 	}
+
+	/// <summary>
+	/// Ensure that the API hooks are not null. 
+	/// </summary>
+	/// <param name="gep_api_hooks"></param>
+	/// <returns></returns>
+	bool CheckHookStructures(GEPApi const* gep_api_hooks)
+	{
+		bool hooks_ok =
+			(gep_api_hooks != nullptr) &&
+			(gep_api_hooks->Initialize != nullptr) &&
+			(gep_api_hooks->HandleSimulationControlMessages != nullptr) && 
+			(gep_api_hooks->HandleStartOfFrameMessages != nullptr);
+
+		return hooks_ok;
+	}
 }

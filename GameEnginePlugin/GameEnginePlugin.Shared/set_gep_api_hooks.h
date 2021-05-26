@@ -7,7 +7,9 @@
 #define SGEPAH_DECLSPEC    __declspec(dllimport)
 #endif
 
-#define SXGEPAH_INITIALIZE_OK 0
+#define SGEPAH_INITIALIZE_OK 0
+
+#include "game_engine_plugin_api.h"
 
 // C/C++ naming
 #ifdef __cplusplus
@@ -18,10 +20,16 @@ extern "C" {
 	struct GEPApi {
 
 		typedef int(__stdcall* InitializeFunc)();
+		InitializeFunc Initialize;
 
 		typedef int(__stdcall* HandleStartOfFrameMessagesFunc)(char**, char**);
+		HandleStartOfFrameMessagesFunc HandleStartOfFrameMessages;
+
+		typedef int (__stdcall* HandleSimulationControlMessagesFunc)(CigiControlPacket*, short*, short);
+		HandleSimulationControlMessagesFunc HandleSimulationControlMessages;
 
 	};
+
 
 	/// <summary>
 	/// Passes in alternate pointers to functions to be called instead of the various GEP functions.

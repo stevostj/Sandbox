@@ -36,6 +36,18 @@ float XPLMFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSi
 {
 	// TODO: convert xplane state information to structures to pass into game engine plugins.
 
+	const short kMaxNumPackets = 100;
+	CigiControlPacket packets[kMaxNumPackets];
+	CIGI_IG_CONTROL & ig_ctrl = packets[0].data.ig_control;
+	ig_ctrl.packet_size = CIGI_IG_CONTROL_SIZE;
+	ig_ctrl.packet_id = CIGI_IG_CONTROL_OPCODE;
+	ig_ctrl.cigi_version = CIGI_VERSION;
+	ig_ctrl.ig_mode = IG_CONTROL_IG_MODE_OPERATE;
+	// TODO: populate more relevant IG control fields
+
+	short num_packets = 1;
+	GepApi.HandleSimulationControlMessages(packets, &num_packets, kMaxNumPackets);
+
 	return -1.0; // schedules xplane to call this function in the next flight loop
 }
 
@@ -49,6 +61,34 @@ namespace {
 		return ::LoadLibrary((LPWSTR)lib_path.c_str());
 	}
 
+	bool SetGepApiHooksToPluginFunctions(HINSTANCE plugin_handle) 
+	{
+		GEPApi::InitializeFunc initialize_func = 
+			(GEPApi::InitializeFunc) ::GetProcAddress(plugin_handle, "GEP_Initialize");
+		GepApi.Initialize = initialize_func;
+
+		GEPApi::HandleStartOfFrameMessagesFunc handlestartofframemessages_func = 
+			(GEPApi::HandleStartOfFrameMessagesFunc) ::GetProcAddress(plugin_handle, "GEP_HandleStartOfFrameMessages");
+		GepApi.HandleStartOfFrameMessages = handlestartofframemessages_func;
+
+		GEPApi::HandleSimulationControlMessagesFunc handlesimulationcontrolmessages_func =
+			(GEPApi::HandleSimulationControlMessagesFunc) ::GetProcAddress(plugin_handle, "GEP_HandleSimulationControlMessages");
+		GepApi.HandleSimulationControlMessages = handlesimulationcontrolmessages_func;
+
+		return gep_xpw::CheckHookStructures(&GepApi);
+	}
+
+	bool InitializeGep(HINSTANCE & plugin_handle, GEPApi & gep_api) 
+	{
+		bool rv = true;
+		if (plugin_handle == 0 && !gep_xpw::CheckHookStructures(&GepApi)) // assumes api hooks to stub out plugin are done prior initialize
+		{
+			plugin_handle = LoadGameEnginePluginLibraries();
+			rv = (hGepHandle != 0) && SetGepApiHooksToPluginFunctions(plugin_handle);
+		}
+
+		return rv;
+	}
 
 	// TODO: store this information into an object
 	static int ScreenHeight;
@@ -80,9 +120,11 @@ PLUGIN_API int XPluginStart(
 	strcpy(outSig, "gameengineplugin");
 	strcpy(outDesc, "Loads and runs 'generic' plugins that easily adapt to different game engine systems. ");
 
+	bool gep_initialize_ok = InitializeGep(hGepHandle, GepApi);
+
     hGepHandle = LoadGameEnginePluginLibraries();
 
-	int xpluginstart_rv = (hGepHandle != 0 && gep_xpw::CheckHookStructures(&XplmDisplayApi, &XplmGraphicsApi, &XplmProcessingApi)) ? 1 : 0;
+	int xpluginstart_rv = (gep_initialize_ok && gep_xpw::CheckHookStructures(&XplmDisplayApi, &XplmGraphicsApi, &XplmProcessingApi)) ? 1 : 0;
 	
 	if (xpluginstart_rv != 0)
 		xpluginstart_rv = InitializeSymbologyRendering(); // TODO: Create a 'canvas' class to store this information

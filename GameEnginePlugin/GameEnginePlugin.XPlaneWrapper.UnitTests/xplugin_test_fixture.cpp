@@ -25,7 +25,8 @@ namespace gep_xpw_ut {
         void XPluginTestFixture::SetUp() 
         {
             LoadPlugin();
-            SetApiHooks();
+            SetXplmApiHooks();
+            SetGepApiHooks();
             XPluginStart();
         }
 
@@ -67,7 +68,7 @@ namespace gep_xpw_ut {
             EXPECT_NE(hGetProcIDDLL, (HINSTANCE)0);
         }
 
-        void XPluginTestFixture::SetApiHooks()
+        void XPluginTestFixture::SetXplmApiHooks()
         {
             // Find function for hooking apis
             SetXplmApiHooksFunc setxplmapihooks_func = (SetXplmApiHooksFunc) ::GetProcAddress(hGetProcIDDLL, "SetXplmApiHooks");
@@ -78,7 +79,6 @@ namespace gep_xpw_ut {
             processing_proxy_ = &gep_xpw_ut::MockXPLMProcessingProxy::get_instance();
 
             // setxplmapihooks returns error on null callbacks
-
             int setxplmapihooks_rv = setxplmapihooks_func(&(display_proxy_->get_XPLMDisplayApi()), &(graphics_proxy_->get_XPLMGraphicsApi()), &(processing_proxy_->get_XPLMProcessingApi()));
             EXPECT_EQ(setxplmapihooks_rv, -1);
 
@@ -94,6 +94,28 @@ namespace gep_xpw_ut {
             setxplmapihooks_rv = setxplmapihooks_func(&(display_proxy_->get_XPLMDisplayApi()), &(graphics_proxy_->get_XPLMGraphicsApi()), &(processing_proxy_->get_XPLMProcessingApi()));
             EXPECT_EQ(setxplmapihooks_rv, SXPLMAH_INITIALIZE_OK); // setxplmapihooks ok
 
+        }
+
+        void XPluginTestFixture::SetGepApiHooks() 
+        {
+            // Find function for hooking apis
+            SetGepApiHooksFunc setgepapihooks_func = (SetGepApiHooksFunc) ::GetProcAddress(hGetProcIDDLL, "SetGepApiHooks");
+            EXPECT_NE(setgepapihooks_func, (SetGepApiHooksFunc)0); // SetGepApiHooks function found
+
+            gep_proxy_ = &gep_xpw_ut::MockGEPProxy::get_instance();
+
+            // setgepapihooks returns error on null callbacks
+            int setgepapihooks_rv = setgepapihooks_func(&(gep_proxy_->get_GEPApi()));
+            EXPECT_EQ(setgepapihooks_rv, -1);
+
+            // Hook in alternative functions to GEP APIs
+            gep_proxy_->get_GEPApi().Initialize = gep_proxy_->get_GEP_InitializeHandler();
+            gep_proxy_->get_GEPApi().HandleStartOfFrameMessages = gep_proxy_->get_GEP_HandleStartOfFrameMessagesHandler();
+            gep_proxy_->get_GEPApi().HandleSimulationControlMessages = gep_proxy_->get_GEP_HandleSimulationControlMessagesHandler();
+
+            setgepapihooks_rv = setgepapihooks_func(&(gep_proxy_->get_GEPApi()));
+            EXPECT_EQ(setgepapihooks_rv, SGEPAH_INITIALIZE_OK); // setgepapihooks ok
+        
         }
 
         void XPluginTestFixture::XPluginStart() 

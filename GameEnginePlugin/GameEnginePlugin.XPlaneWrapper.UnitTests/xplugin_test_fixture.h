@@ -16,6 +16,9 @@ namespace gep_xpw_ut {
 
     typedef int(__stdcall* SetXplmApiHooksFunc)(XPLMDisplayApi *, XPLMGraphicsApi *, XPLMProcessingApi *);
 
+    typedef int(__stdcall* SetGepApiHooksFunc)(GEPApi*);
+
+
     /// <summary>
     /// Initializes objects and loads libraries necessary to test XPlugin functions.
     /// </summary>
@@ -39,7 +42,9 @@ namespace gep_xpw_ut {
 
         void LoadPlugin();
 
-        void SetApiHooks();
+        void SetXplmApiHooks();
+
+        void SetGepApiHooks();
 
         void XPluginStart();
 

@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F46DCD58-7BB7-4033-8E0B-132F574A57E5}"
+	ProjectSection(SolutionItems) = preProject
+		CIGI4\include\cigi4types.h = CIGI4\include\cigi4types.h
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExampleGameEnginePluginHost", "ExampleGameEnginePluginHost\ExampleGameEnginePluginHost.vcxproj", "{755435E2-4D2C-42AB-B87B-447ED2033CF6}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -42,6 +45,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XPlane", "XPlane", "{B277FD
 		XPlane\SDK\CHeaders\XPLM\XPLMProcessing.h = XPlane\SDK\CHeaders\XPLM\XPLMProcessing.h
 		XPlane\SDK\CHeaders\XPLM\XPLMScenery.h = XPlane\SDK\CHeaders\XPLM\XPLMScenery.h
 		XPlane\SDK\CHeaders\XPLM\XPLMUtilities.h = XPlane\SDK\CHeaders\XPLM\XPLMUtilities.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CIGI4", "CIGI4", "{82F5BE02-71C9-464B-9F68-D9A71F895D65}"
+	ProjectSection(SolutionItems) = preProject
+		CIGI4\include\cigi4types.h = CIGI4\include\cigi4types.h
 	EndProjectSection
 EndProject
 Global
@@ -96,6 +104,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B277FD0A-297B-45C9-8682-58CFAC7DED2B} = {F46DCD58-7BB7-4033-8E0B-132F574A57E5}
+		{82F5BE02-71C9-464B-9F68-D9A71F895D65} = {F46DCD58-7BB7-4033-8E0B-132F574A57E5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {590DFFFA-CB14-455D-9B42-68B9F0CBD5C6}

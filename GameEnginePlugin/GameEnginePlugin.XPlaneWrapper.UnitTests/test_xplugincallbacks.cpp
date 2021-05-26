@@ -19,12 +19,17 @@ using ::testing::Ne;
 
 namespace gep_xpw_ut {
 
-    TEST_F(XPluginTestFixture, TestXPluginDrawCallbackSetsGraphicsState) 
+    TEST_F(XPluginTestFixture, TestXPluginDrawCallback) 
     {
 
         // Each time XPlane triggers draw callbacks, the XPLMGraphics SetGraphicsState function will be called
         // to 'reset the canvas'. 
         EXPECT_CALL(*graphics_proxy_, XPLMSetGraphicsState(0, _, 0, _, _, _, _));
+
+        // draw callbacks will trigger a start of frame to the game engine plugins
+        // TODO: change the SoF function signature to use cigi structures instead of 
+        // pointers to a byte buffer. 
+        EXPECT_CALL(*gep_proxy_, GEP_HandleStartOfFrameMessages(NotNull(), NotNull()));
 
         XPLMDrawCallback_f draw_cb = display_proxy_->get_XPLMDisplayApi().DrawCallback;
         EXPECT_NE(draw_cb, nullptr);
@@ -32,7 +37,20 @@ namespace gep_xpw_ut {
         int draw_rv = draw_cb(xplm_Phase_LastCockpit, 0, nullptr);
         EXPECT_NE(draw_rv, 0);
 
-        EXPECT_CALL(*gep_proxy_, GEP_HandleStartOfFrameMessages(NotNull(), NotNull()));
+    }
+
+    TEST_F(XPluginTestFixture, TestXPluginFlightLoopCallback)
+    {
+
+        XPLMFlightLoop_f flight_loop_cb = processing_proxy_->get_XPLMProcessingApi().FlightLoopCallback;
+        EXPECT_NE(flight_loop_cb, nullptr);
+
+        // TODO: emulate behavior of repeating flight loop calls
+        int flight_loop_rv = flight_loop_cb(0.0f, 0.0f, 1, 0);
+        EXPECT_NE(flight_loop_rv, 0);
+        
+        // TODO: test details of messages in/out.
+        EXPECT_CALL(*gep_proxy_, GEP_HandleSimulationControlMessages(NotNull(), NotNull(), 100));
 
     }
 

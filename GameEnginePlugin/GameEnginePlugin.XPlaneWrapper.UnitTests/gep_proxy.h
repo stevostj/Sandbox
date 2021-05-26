@@ -22,11 +22,21 @@ namespace gep_xpw_ut {
     /// Abstract base class for Game Engine Plugin proxy implementations. 
     /// </summary>
     class GEPProxy {
-    public:
+     public:
 
         virtual int GEP_Initialize() = 0;
 
         virtual int GEP_HandleStartOfFrameMessages(char** messages_in, char** messages_out) = 0;
+
+        virtual int GEP_HandleSimulationControlMessages(CigiControlPacket* packets, short* num_packets, short max_num_packets) = 0;
+
+        GEPApi & get_GEPApi() {
+            return gep_api_;
+        }
+
+
+     private:
+         GEPApi gep_api_;
 
     };
 
@@ -50,6 +60,14 @@ namespace gep_xpw_ut {
         /// <returns></returns>
         GEPApi::HandleStartOfFrameMessagesFunc const& get_GEP_HandleStartOfFrameMessagesHandler() const {
             return gep_handlestartofframemessages_handler_;
+        }
+
+        /// <summary>
+        /// An API hook to handle proxy calls to GEP functions.
+        /// </summary>
+        /// <returns></returns>
+        GEPApi::HandleSimulationControlMessagesFunc const& get_GEP_HandleSimulationControlMessagesHandler() const {
+            return gep_handlesimulationcontrolmessages_handler_;
         }
 
         /// <summary>
@@ -95,11 +113,28 @@ namespace gep_xpw_ut {
             return MockGEPProxy::get_instance().GEP_HandleStartOfFrameMessages(messages_in, messages_out);
         }
 
+        /// <summary>
+        /// Forward the GEP_HandleSimulationControlMessages function call to the mock object
+        /// </summary>
+        /// <param name="packets">See GEP_HandleSimulationControlMessages</param>
+        /// <param name="num_packets">See GEP_HandleSimulationControlMessages</param>
+        /// <param name="max_num_packets">See GEP_HandleSimulationControlMessages</param>
+        /// <returns>See GEP_HandleSimulationControlMessages</returns>
+        static int MockGEPProxy::HandleHandleSimulationControlMessages(CigiControlPacket* packets, short* num_packets, short max_num_packets)
+        {
+            return MockGEPProxy::get_instance().GEP_HandleSimulationControlMessages(packets, num_packets, max_num_packets);
+        }
+
         MOCK_METHOD(int, GEP_Initialize, (), (override));
 
         MOCK_METHOD(int, GEP_HandleStartOfFrameMessages, (
             char** messages_in,
             char** messages_out), (override));
+
+        MOCK_METHOD(int, GEP_HandleSimulationControlMessages, (
+            CigiControlPacket* packets, 
+            short* num_packets, 
+            short max_num_packets), (override));
 
         // Disable copying
         MockGEPProxy(MockGEPProxy& other) = delete;
@@ -119,6 +154,8 @@ namespace gep_xpw_ut {
         GEPApi::InitializeFunc gep_initialize_handler_;
 
         GEPApi::HandleStartOfFrameMessagesFunc gep_handlestartofframemessages_handler_;
+
+        GEPApi::HandleSimulationControlMessagesFunc gep_handlesimulationcontrolmessages_handler_;
 
         static MockGEPProxy* instance_;
 
