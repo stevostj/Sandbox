@@ -11,6 +11,8 @@ SGEPAH_DECLSPEC int SetGepApiHooks(GEPApi* gep_api_hooks)
 	{
 		return_code = SGEPAH_INITIALIZE_OK;
 		GepApi.Initialize = gep_api_hooks->Initialize; // set global
+		GepApi.HandleStartOfFrameMessages = gep_api_hooks->HandleStartOfFrameMessages; // set global
+		GepApi.HandleSimulationControlMessages = gep_api_hooks->HandleSimulationControlMessages; // set global
 	}
 
 	return return_code;

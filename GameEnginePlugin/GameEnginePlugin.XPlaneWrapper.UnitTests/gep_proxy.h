@@ -34,6 +34,13 @@ namespace gep_xpw_ut {
             return gep_api_;
         }
 
+    protected:
+        GEPProxy() 
+        {
+            gep_api_.Initialize = nullptr;
+            gep_api_.HandleStartOfFrameMessages = nullptr;
+            gep_api_.HandleSimulationControlMessages = nullptr;
+        }
 
      private:
          GEPApi gep_api_;
@@ -145,7 +152,8 @@ namespace gep_xpw_ut {
     private:
         MockGEPProxy() :
             gep_initialize_handler_(MockGEPProxy::HandleInitialize),
-            gep_handlestartofframemessages_handler_(MockGEPProxy::HandleHandleStartOfFrameMessages)
+            gep_handlestartofframemessages_handler_(MockGEPProxy::HandleHandleStartOfFrameMessages), 
+            gep_handlesimulationcontrolmessages_handler_(MockGEPProxy::HandleHandleSimulationControlMessages) 
         {
         }
 

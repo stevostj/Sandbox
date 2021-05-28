@@ -108,7 +108,6 @@ namespace {
 		XplmProcessingApi.RegisterFlightLoopCallback(XPLMFlightLoopCallback, -1.0 /* schedule for first flight loop */, nullptr);
 	}
 
-
 }
 
 PLUGIN_API int XPluginStart(

@@ -45,12 +45,13 @@ namespace gep_xpw_ut {
         XPLMFlightLoop_f flight_loop_cb = processing_proxy_->get_XPLMProcessingApi().FlightLoopCallback;
         EXPECT_NE(flight_loop_cb, nullptr);
 
+        // TODO: test details of messages in/out.
+        EXPECT_CALL(*gep_proxy_, GEP_HandleSimulationControlMessages(NotNull(), NotNull(), 100));
+
         // TODO: emulate behavior of repeating flight loop calls
         int flight_loop_rv = flight_loop_cb(0.0f, 0.0f, 1, 0);
         EXPECT_NE(flight_loop_rv, 0);
-        
-        // TODO: test details of messages in/out.
-        EXPECT_CALL(*gep_proxy_, GEP_HandleSimulationControlMessages(NotNull(), NotNull(), 100));
+
 
     }
 
