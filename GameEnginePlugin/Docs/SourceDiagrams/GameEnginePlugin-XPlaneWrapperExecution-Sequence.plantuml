@@ -36,6 +36,18 @@ activate XPWH
 XPWH -> XPW: FlightLoopCallback
 activate XPW
 XPW -> XPW: GenerateSimHostMessages(RESPONSES) as SHMSG
+activate XPW
+XPW -> XPWH: api_hooks.XPLMCamera.XPLMReadCameraPosition
+activate XPWH
+XPWH --> XPW: CAMPOS
+deactivate XPWH
+XPW -> XPW: Convert(CAMPOS)
+activate XPW
+XPW --> XPW: CIGI View Control as VIEWMSG
+deactivate XPW
+XPW -> XPW: Add VIEWMSG to SHMSG
+deactivate XPW
+
 XPW -> GEP: HandleSimulationHostMessages(SHMSG)
 activate GEP
 GEP --> XPW

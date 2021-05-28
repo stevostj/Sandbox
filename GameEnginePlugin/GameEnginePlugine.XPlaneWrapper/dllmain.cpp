@@ -16,6 +16,7 @@ std::wstring DllPath;
 XPLMDisplayApi XplmDisplayApi;
 XPLMGraphicsApi XplmGraphicsApi;
 XPLMProcessingApi XplmProcessingApi;
+XPLMCameraApi XplmCameraApi;
 
 namespace {
 
@@ -52,7 +53,9 @@ namespace {
 
         XplmProcessingApi.RegisterFlightLoopCallback = &XPLMRegisterFlightLoopCallback;
 
-        return SetXplmApiHooks(&XplmDisplayApi, &XplmGraphicsApi, &XplmProcessingApi);
+        XplmCameraApi.ReadCameraPosition = &XPLMReadCameraPosition;
+
+        return SetXplmApiHooks(&XplmDisplayApi, &XplmGraphicsApi, &XplmProcessingApi, &XplmCameraApi);
     }
 
 }

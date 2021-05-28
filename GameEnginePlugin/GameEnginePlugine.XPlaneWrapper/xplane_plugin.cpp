@@ -123,7 +123,7 @@ PLUGIN_API int XPluginStart(
 
     hGepHandle = LoadGameEnginePluginLibraries();
 
-	int xpluginstart_rv = (gep_initialize_ok && gep_xpw::CheckHookStructures(&XplmDisplayApi, &XplmGraphicsApi, &XplmProcessingApi)) ? 1 : 0;
+	int xpluginstart_rv = (gep_initialize_ok && gep_xpw::CheckHookStructures(&XplmDisplayApi, &XplmGraphicsApi, &XplmProcessingApi, &XplmCameraApi)) ? 1 : 0;
 	
 	if (xpluginstart_rv != 0)
 		xpluginstart_rv = InitializeSymbologyRendering(); // TODO: Create a 'canvas' class to store this information

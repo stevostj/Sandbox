@@ -36,7 +36,6 @@ namespace gep_xpw_ut {
 
         int draw_rv = draw_cb(xplm_Phase_LastCockpit, 0, nullptr);
         EXPECT_NE(draw_rv, 0);
-
     }
 
     TEST_F(XPluginTestFixture, TestXPluginFlightLoopCallback)
@@ -45,14 +44,30 @@ namespace gep_xpw_ut {
         XPLMFlightLoop_f flight_loop_cb = processing_proxy_->get_XPLMProcessingApi().FlightLoopCallback;
         EXPECT_NE(flight_loop_cb, nullptr);
 
-        // TODO: test details of messages in/out.
+        // TODO: test details of ig control message.
         EXPECT_CALL(*gep_proxy_, GEP_HandleSimulationControlMessages(NotNull(), NotNull(), 100));
 
         // TODO: emulate behavior of repeating flight loop calls
         int flight_loop_rv = flight_loop_cb(0.0f, 0.0f, 1, 0);
         EXPECT_NE(flight_loop_rv, 0);
 
-
     }
 
+    TEST_F(XPluginTestFixture, TestXPluginFlightLoopCallbackForwardsCameraStatesToGep)
+    {
+
+        XPLMFlightLoop_f flight_loop_cb = processing_proxy_->get_XPLMProcessingApi().FlightLoopCallback;
+        EXPECT_NE(flight_loop_cb, nullptr);
+
+        // Set up XPLM Camera calls
+        XPLMCameraPosition_t camera_position = {};
+        EXPECT_CALL(*camera_proxy_, XPLMReadCameraPosition(_)).WillOnce(DoAll(SetArgPointee<0>(camera_position)));
+
+        // TODO: test details of messages in/out.
+        EXPECT_CALL(*gep_proxy_, GEP_HandleSimulationControlMessages(NotNull(), NotNull(), 100));
+
+        int flight_loop_rv = flight_loop_cb(0.0f, 0.0f, 1, 0);
+        EXPECT_NE(flight_loop_rv, 0);
+
+    }
 }

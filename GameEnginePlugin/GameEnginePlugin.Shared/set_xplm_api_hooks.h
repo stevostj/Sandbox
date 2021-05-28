@@ -10,6 +10,7 @@
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
 #include "XPLMProcessing.h"
+#include "XPLMCamera.h"
 
 #define SXPLMAH_INITIALIZE_OK 0
 
@@ -46,14 +47,21 @@ extern "C" {
 		XPLMFlightLoop_f FlightLoopCallback;
 	};
 
+	// Function signatures and pointers to XPLMCamera API
+	struct XPLMCameraApi {
+		typedef void(__stdcall* ReadCameraPositionFunc)(XPLMCameraPosition_t*);
+		ReadCameraPositionFunc ReadCameraPosition;
+	};
+
 	/// <summary>
 	/// Passes in alternate pointers to functions to be called instead of the various XPLM functions.
 	/// </summary>
 	/// <param name="display_api_hooks">Group of pointers to XPLMDisplay functions. </param>
 	/// <param name="graphics_api_hooks">Group of pointers to XPLMGraphics functions. </param>
 	/// <param name="processing_api_hooks">Group of pointers to XPLMProcessing functions. </param>
+	/// <param name="camera_api_hooks">Group of pointers to XPLMCamera functions. </param>
 	/// <returns>An error code indicating any problems that occurred while setting the api hooks. </returns>
-	SXPLMAH_DECLSPEC int SetXplmApiHooks(XPLMDisplayApi * display_api_hooks, XPLMGraphicsApi * graphics_api_hooks, XPLMProcessingApi * processing_api_hooks);
+	SXPLMAH_DECLSPEC int SetXplmApiHooks(XPLMDisplayApi * display_api_hooks, XPLMGraphicsApi * graphics_api_hooks, XPLMProcessingApi * processing_api_hooks, XPLMCameraApi * camera_api_hooks);
 
 #ifdef __cplusplus
 }

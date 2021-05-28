@@ -9,7 +9,7 @@ namespace gep_xpw {
 	/// <param name="graphics_api_hooks"></param>
 	/// <param name="processing_api_hooks"></param>
 	/// <returns></returns>
-	bool CheckHookStructures(XPLMDisplayApi const * display_api_hooks, XPLMGraphicsApi const *graphics_api_hooks, XPLMProcessingApi const * processing_api_hooks)
+	bool CheckHookStructures(XPLMDisplayApi const * display_api_hooks, XPLMGraphicsApi const *graphics_api_hooks, XPLMProcessingApi const * processing_api_hooks, XPLMCameraApi const * camera_api_hooks)
 	{
 		bool display_ok =
 			(display_api_hooks != nullptr) && 
@@ -24,7 +24,11 @@ namespace gep_xpw {
 			(processing_api_hooks != nullptr) &&
 			(processing_api_hooks->RegisterFlightLoopCallback != nullptr);
 
-		return display_ok && graphics_ok && processing_ok;
+		bool camera_ok =
+			(camera_api_hooks != nullptr) &&
+			(camera_api_hooks->ReadCameraPosition != nullptr);
+
+		return display_ok && graphics_ok && processing_ok && camera_ok;
 	}
 
 	/// <summary>

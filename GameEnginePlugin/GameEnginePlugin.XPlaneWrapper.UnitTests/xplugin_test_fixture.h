@@ -7,6 +7,7 @@
 #include "xplmgraphics_proxy.h"
 #include "xplmdisplay_proxy.h"
 #include "xplmprocessing_proxy.h"
+#include "xplmcamera_proxy.h"
 #include "gep_proxy.h"
 
 namespace gep_xpw_ut {
@@ -34,6 +35,7 @@ namespace gep_xpw_ut {
         gep_xpw_ut::MockXPLMDisplayProxy* display_proxy_;
         gep_xpw_ut::MockXPLMGraphicsProxy* graphics_proxy_;
         gep_xpw_ut::MockXPLMProcessingProxy* processing_proxy_;
+        gep_xpw_ut::MockXPLMCameraProxy* camera_proxy_;
         gep_xpw_ut::MockGEPProxy* gep_proxy_;
 
      private:

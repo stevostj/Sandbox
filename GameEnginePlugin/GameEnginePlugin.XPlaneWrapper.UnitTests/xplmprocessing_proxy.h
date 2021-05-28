@@ -27,7 +27,6 @@ namespace gep_xpw_ut {
     protected:
         XPLMProcessingProxy() {
             xplm_processing_api_.RegisterFlightLoopCallback = nullptr;
-            xplm_processing_api_.RegisterFlightLoopCallback = nullptr;
         }
 
     private:
