@@ -15,7 +15,7 @@ namespace gep_xpw_ut {
 
     typedef int(__stdcall* XPluginStartFunc)(char*, char*, char*);
 
-    typedef int(__stdcall* SetXplmApiHooksFunc)(XPLMDisplayApi *, XPLMGraphicsApi *, XPLMProcessingApi *);
+    typedef int(__stdcall* SetXplmApiHooksFunc)(XPLMDisplayApi *, XPLMGraphicsApi *, XPLMProcessingApi *, XPLMCameraApi *);
 
     typedef int(__stdcall* SetGepApiHooksFunc)(GEPApi*);
 

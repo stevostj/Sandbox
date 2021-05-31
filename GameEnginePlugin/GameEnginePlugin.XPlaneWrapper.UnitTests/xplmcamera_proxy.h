@@ -16,7 +16,7 @@ namespace gep_xpw_ut {
 
         virtual void XPLMReadCameraPosition(XPLMCameraPosition_t * outCameraPosition) = 0;
 
-        XPLMCameraApi& get_XPLMCameraApi() {
+        XPLMCameraApi & get_XPLMCameraApi() {
             return xplm_camera_api_;
         }
 
@@ -40,7 +40,7 @@ namespace gep_xpw_ut {
         /// An API hook to handle proxy calls to XPLM Camera functions.
         /// </summary>
         /// <returns></returns>
-        XPLMCameraApi::ReadCameraPositionFunc const & get_XPLMRegisterFlightLoopCallbackHandler() const
+        XPLMCameraApi::ReadCameraPositionFunc const & get_XPLMReadCameraPositionHandler() const
         {
             return xplm_read_camera_position_handler_;
         }

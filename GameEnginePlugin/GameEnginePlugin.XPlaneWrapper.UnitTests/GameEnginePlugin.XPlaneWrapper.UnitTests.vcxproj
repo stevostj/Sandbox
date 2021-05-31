@@ -47,6 +47,7 @@
     <ClCompile Include="gep_proxy.cpp" />
     <ClCompile Include="test_xplugincallbacks.cpp" />
     <ClCompile Include="xlmprocessing_proxy.cpp" />
+    <ClCompile Include="xplmcamera_proxy.cpp" />
     <ClCompile Include="xplmdisplay_proxy.cpp" />
     <ClCompile Include="xplmgraphics_proxy.cpp" />
     <ClCompile Include="xplugin_test_fixture.cpp" />

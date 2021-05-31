@@ -31,21 +31,60 @@ int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon)
 	return 1;
 }
 
-// TODO: Move this into its own file/class
-float XPLMFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSinceLastFlightLoop, int inCounter, void* inRefcon)
+CIGI_VIEW_CONTROL GenerateViewControl()
 {
-	// TODO: convert xplane state information to structures to pass into game engine plugins.
+	XPLMCameraPosition_t camera_position = {};
+	XplmCameraApi.ReadCameraPosition(&camera_position);
 
-	const short kMaxNumPackets = 100;
-	CigiControlPacket packets[kMaxNumPackets];
-	CIGI_IG_CONTROL & ig_ctrl = packets[0].data.ig_control;
+	// Assume that the 'main' view is in a fixed position relative to the aircraft.
+	// This more or less means the 'camera position' that is reported is actually
+	// the aircraft position in the local coordinate system. 
+	CIGI_VIEW_CONTROL view_control = {};
+	view_control.packet_size = CIGI_VIEW_CONTROL_SIZE;
+	view_control.packet_id = CIGI_VIEW_CONTROL_OPCODE;
+	view_control.group_id = 0;
+	view_control.xoffset_enable = 1;
+	view_control.yoffset_enable = 1;
+	view_control.zoffset_enable = 1;
+	view_control.roll_enable = 1;
+	view_control.pitch_enable = 1;
+	view_control.yaw_enable = 1;
+	// 2  reserved bits
+	view_control.view_id = 1;
+	view_control.entity_id = 0;
+	// 16 reserved bits
+	view_control.xoffset = 0.0f;;
+	view_control.yoffset = 0.0f;
+	view_control.zoffset = 0.0f;
+	view_control.roll = 0.0f;
+	view_control.pitch = 0.0f;
+	view_control.yaw = 0.0f;
+	// 32 reserved bits
+
+	return view_control;
+}
+
+CIGI_IG_CONTROL GenerateIgControl()
+{
+	CIGI_IG_CONTROL ig_ctrl = {};
 	ig_ctrl.packet_size = CIGI_IG_CONTROL_SIZE;
 	ig_ctrl.packet_id = CIGI_IG_CONTROL_OPCODE;
 	ig_ctrl.cigi_version = CIGI_VERSION;
 	ig_ctrl.ig_mode = IG_CONTROL_IG_MODE_OPERATE;
 	// TODO: populate more relevant IG control fields
 
-	short num_packets = 1;
+	return ig_ctrl;
+}
+
+// TODO: Move this into its own file/class
+float XPLMFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSinceLastFlightLoop, int inCounter, void* inRefcon)
+{
+	const short kMaxNumPackets = 100;
+	CigiControlPacket packets[kMaxNumPackets];
+	packets[0].data.ig_control = GenerateIgControl();
+	packets[1].data.view_control = GenerateViewControl();
+
+	short num_packets = 2;
 	GepApi.HandleSimulationControlMessages(packets, &num_packets, kMaxNumPackets);
 
 	return -1.0; // schedules xplane to call this function in the next flight loop

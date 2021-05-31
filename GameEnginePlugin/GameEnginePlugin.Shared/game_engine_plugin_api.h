@@ -18,6 +18,7 @@ struct CigiControlPacket {
 	union {
 		CIGI_IG_CONTROL ig_control;
 		CIGI_ENTITY_POSITION entity_position;
+		CIGI_VIEW_CONTROL view_control;
 		// TODO: Add complete set of CIGI control packets
 	} data; 
 };

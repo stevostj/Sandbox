@@ -37,6 +37,11 @@ namespace gep_xpw_ut {
             EXPECT_TRUE(unload_rv);
 
             display_proxy_->destroy();
+            processing_proxy_->destroy();
+            camera_proxy_->destroy();
+            graphics_proxy_->destroy();
+
+            gep_proxy_->destroy();
         }
 
 
@@ -77,9 +82,15 @@ namespace gep_xpw_ut {
             display_proxy_ = &gep_xpw_ut::MockXPLMDisplayProxy::get_instance();
             graphics_proxy_ = &gep_xpw_ut::MockXPLMGraphicsProxy::get_instance();
             processing_proxy_ = &gep_xpw_ut::MockXPLMProcessingProxy::get_instance();
+            camera_proxy_ = &gep_xpw_ut::MockXPLMCameraProxy::get_instance();
 
             // setxplmapihooks returns error on null callbacks
-            int setxplmapihooks_rv = setxplmapihooks_func(&(display_proxy_->get_XPLMDisplayApi()), &(graphics_proxy_->get_XPLMGraphicsApi()), &(processing_proxy_->get_XPLMProcessingApi()));
+            int setxplmapihooks_rv = 
+                setxplmapihooks_func(
+                    &(display_proxy_->get_XPLMDisplayApi()), 
+                    &(graphics_proxy_->get_XPLMGraphicsApi()), 
+                    &(processing_proxy_->get_XPLMProcessingApi()), 
+                    &(camera_proxy_->get_XPLMCameraApi()));
             EXPECT_EQ(setxplmapihooks_rv, -1);
 
             // Hook in alternative functions to XPLM APIs
@@ -91,7 +102,14 @@ namespace gep_xpw_ut {
 
             processing_proxy_->get_XPLMProcessingApi().RegisterFlightLoopCallback = processing_proxy_->get_XPLMRegisterFlightLoopCallbackHandler();
 
-            setxplmapihooks_rv = setxplmapihooks_func(&(display_proxy_->get_XPLMDisplayApi()), &(graphics_proxy_->get_XPLMGraphicsApi()), &(processing_proxy_->get_XPLMProcessingApi()));
+            camera_proxy_->get_XPLMCameraApi().ReadCameraPosition = camera_proxy_->get_XPLMReadCameraPositionHandler();
+
+            setxplmapihooks_rv = 
+                setxplmapihooks_func(
+                    &(display_proxy_->get_XPLMDisplayApi()),
+                    &(graphics_proxy_->get_XPLMGraphicsApi()),
+                    &(processing_proxy_->get_XPLMProcessingApi()),
+                    &(camera_proxy_->get_XPLMCameraApi()));
             EXPECT_EQ(setxplmapihooks_rv, SXPLMAH_INITIALIZE_OK); // setxplmapihooks ok
 
         }
