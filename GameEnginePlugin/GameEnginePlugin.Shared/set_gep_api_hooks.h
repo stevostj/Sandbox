@@ -25,7 +25,7 @@ extern "C" {
 		typedef int(__stdcall* HandleStartOfFrameMessagesFunc)(char**, char**);
 		HandleStartOfFrameMessagesFunc HandleStartOfFrameMessages;
 
-		typedef int (__stdcall* HandleSimulationControlMessagesFunc)(CigiControlPacket*, short*, short);
+		typedef int (__stdcall* HandleSimulationControlMessagesFunc)(CigiControlPacket*, int, short*);
 		HandleSimulationControlMessagesFunc HandleSimulationControlMessages;
 
 	};

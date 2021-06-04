@@ -28,7 +28,7 @@ namespace gep_xpw_ut {
 
         virtual int GEP_HandleStartOfFrameMessages(char** messages_in, char** messages_out) = 0;
 
-        virtual int GEP_HandleSimulationControlMessages(CigiControlPacket* packets, short* num_packets, short max_num_packets) = 0;
+        virtual int GEP_HandleSimulationControlMessages(CigiControlPacket* packets, int max_num_packets, short* num_packets) = 0;
 
         GEPApi & get_GEPApi() {
             return gep_api_;
@@ -127,9 +127,9 @@ namespace gep_xpw_ut {
         /// <param name="num_packets">See GEP_HandleSimulationControlMessages</param>
         /// <param name="max_num_packets">See GEP_HandleSimulationControlMessages</param>
         /// <returns>See GEP_HandleSimulationControlMessages</returns>
-        static int MockGEPProxy::HandleHandleSimulationControlMessages(CigiControlPacket* packets, short* num_packets, short max_num_packets)
+        static int MockGEPProxy::HandleHandleSimulationControlMessages(CigiControlPacket* packets, int max_num_packets, short* num_packets)
         {
-            return MockGEPProxy::get_instance().GEP_HandleSimulationControlMessages(packets, num_packets, max_num_packets);
+            return MockGEPProxy::get_instance().GEP_HandleSimulationControlMessages(packets, max_num_packets, num_packets);
         }
 
         MOCK_METHOD(int, GEP_Initialize, (), (override));
@@ -140,8 +140,8 @@ namespace gep_xpw_ut {
 
         MOCK_METHOD(int, GEP_HandleSimulationControlMessages, (
             CigiControlPacket* packets, 
-            short* num_packets, 
-            short max_num_packets), (override));
+            int max_num_packets,
+            short* num_packets), (override));
 
         // Disable copying
         MockGEPProxy(MockGEPProxy& other) = delete;

@@ -18,10 +18,6 @@ extern GEPApi GepApi;
 // TODO: Move this into its own file/class
 extern int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon);
 
-void GenerateViewControl(CigiControlPacket  packets[100]);
-
-void NewFunction(CIGI_IG_CONTROL& ig_ctrl);
-
 // TODO: Move this into its own file/class
 float XPLMFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSinceLastFlightLoop, int inCounter, void* inRefcon);
 

@@ -15,8 +15,9 @@ extern "C" {
 #endif
 
 struct CigiControlPacket {
-	union {
+	union CigiControlPacketData {
 		CIGI_IG_CONTROL ig_control;
+		CIGI_ENTITY_CONTROL entity_control;
 		CIGI_ENTITY_POSITION entity_position;
 		CIGI_VIEW_CONTROL view_control;
 		// TODO: Add complete set of CIGI control packets
@@ -37,7 +38,7 @@ GEP_DECLSPEC int GEP_Initialize();
 
 GEP_DECLSPEC int GEP_HandleStartOfFrameMessages(char ** messages_in, char ** messages_out);
 
-GEP_DECLSPEC int GEP_HandleSimulationControlMessages(CigiControlPacket * packets, short * num_packets, short max_num_packets);
+GEP_DECLSPEC int GEP_HandleSimulationControlMessages(CigiControlPacket * packets, int max_num_packets, short * num_packets);
 
 
 #ifdef __cplusplus
