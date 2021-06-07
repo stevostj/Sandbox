@@ -77,9 +77,6 @@ namespace {
 
 CIGI_VIEW_CONTROL GenerateViewControl()
 {
-	XPLMCameraPosition_t camera_position = {};
-	XplmCameraApi.ReadCameraPosition(&camera_position);
-
 	// Assume that the 'main' view is in a fixed position relative to the aircraft.
 	// This more or less means the 'camera position' that is reported is actually
 	// the aircraft position in the local coordinate system. 
@@ -133,6 +130,26 @@ CIGI_ENTITY_CONTROL GenerateEntityControl()
 	return entity_control;
 }
 
+CIGI_ENTITY_POSITION GenerateEntityPosition(XPLMCameraPosition_t & camera_position)
+{
+	// Assume that the 'main' view is in a fixed position relative to the aircraft.
+	// This more or less means the 'camera position' that is reported is actually
+	// the aircraft position in the local coordinate system. 
+
+	// TODO: transform to geodetic coordinates
+	CIGI_ENTITY_POSITION entity_position = {};
+	entity_position.packet_size = CIGI_ENTITY_POSITION_SIZE;
+	entity_position.packet_id = CIGI_ENTITY_POSITION_OPCODE;
+	entity_position.entity_id = 0;
+	entity_position.lat_x = camera_position.x;
+	entity_position.lon_y = camera_position.y;
+	entity_position.alt_z = camera_position.z;
+	entity_position.roll = camera_position.roll;
+	entity_position.pitch = camera_position.pitch;
+	entity_position.yaw = camera_position.heading;
+
+	return entity_position;
+}
 
 CIGI_IG_CONTROL GenerateIgControl()
 {
@@ -167,11 +184,16 @@ float XPLMFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSi
 {
 	const int kMaxNumPackets = 100;
 	CigiControlPacket packets[kMaxNumPackets];
+
+	XPLMCameraPosition_t camera_position = {};
+	XplmCameraApi.ReadCameraPosition(&camera_position);
+
 	packets[0].data.ig_control = GenerateIgControl();
 	packets[1].data.entity_control = GenerateEntityControl();
-	packets[2].data.view_control = GenerateViewControl();
+	packets[2].data.entity_position = GenerateEntityPosition(camera_position);
+	packets[3].data.view_control = GenerateViewControl();
 
-	short num_packets = 2;
+	short num_packets = 4;
 	GepApi.HandleSimulationControlMessages(packets, kMaxNumPackets, &num_packets);
 
 	return -1.0; // schedules xplane to call this function in the next flight loop

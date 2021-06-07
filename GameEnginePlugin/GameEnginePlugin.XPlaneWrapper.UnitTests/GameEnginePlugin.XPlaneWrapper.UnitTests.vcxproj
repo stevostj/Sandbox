@@ -37,6 +37,7 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClInclude Include="gep_proxy.h" />
+    <ClInclude Include="helper_methods.h" />
     <ClInclude Include="xplmcamera_proxy.h" />
     <ClInclude Include="xplmdisplay_proxy.h" />
     <ClInclude Include="xplmgraphics_proxy.h" />

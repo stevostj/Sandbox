@@ -3,6 +3,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
+#include "helper_methods.h"
 #include "xplmgraphics_proxy.h"
 #include "xplmdisplay_proxy.h"
 #include "xplmprocessing_proxy.h"
@@ -66,18 +67,21 @@ namespace gep_xpw_ut {
             entity_control.entity_state == CIGI_ACTIVE);
     }
 
+    // TODO: do a conversion from local plane coordinates to geodetic
     bool EntityPositionThatIndicatesMainAircraftCameraState(CigiControlPacket const& packet)
     {
+        static const double kToleranceDouble = 0.001;
+        static const float kTolerance = 0.001;
         CIGI_ENTITY_POSITION const& entity_position = packet.data.entity_position;
         return (entity_position.packet_size == CIGI_ENTITY_POSITION_SIZE &&
             entity_position.packet_id == CIGI_ENTITY_POSITION_OPCODE &&
             entity_position.entity_id == 0 && 
-            entity_position.lat_x == 0.0 && 
-            entity_position.lon_y == 0.0 && 
-            entity_position.alt_z == 0.0 && 
-            entity_position.roll == 0.0f && 
-            entity_position.pitch == 0.0f && 
-            entity_position.yaw == 0.0f);
+            ApproximatelyEqual(entity_position.lat_x, 12.34, kToleranceDouble) &&
+            ApproximatelyEqual(entity_position.lon_y, 56.78, kToleranceDouble) &&
+            ApproximatelyEqual(entity_position.alt_z, 9.0, kToleranceDouble) &&
+            ApproximatelyEqual(entity_position.roll, 78.9f, kTolerance) &&
+            ApproximatelyEqual(entity_position.pitch, 12.3f, kTolerance) &&
+            ApproximatelyEqual(entity_position.yaw, 45.6f, kTolerance));
     }
 
     TEST_F(XPluginTestFixture, TestXPluginFlightLoopCallbackForwardsCameraStatesToGep)
@@ -88,43 +92,15 @@ namespace gep_xpw_ut {
 
         // Set up XPLM Camera calls
         XPLMCameraPosition_t zero_camera_position;
-        zero_camera_position.x = 0.0f;
-        zero_camera_position.y = 0.0f;
-        zero_camera_position.z = 0.0f;
-        zero_camera_position.pitch = 0.0f;
-        zero_camera_position.heading = 0.0f;
-        zero_camera_position.roll = 0.0f;
+        zero_camera_position.x = 12.34f;
+        zero_camera_position.y = 56.78f;
+        zero_camera_position.z = 9.0f;
+        zero_camera_position.pitch = 12.3f;
+        zero_camera_position.heading = 45.6f;
+        zero_camera_position.roll = 78.9f;
         zero_camera_position.zoom = 1.0f;
 
         EXPECT_CALL(*camera_proxy_, XPLMReadCameraPosition(_)).WillOnce(DoAll(SetArgPointee<0>(zero_camera_position)));
-
-        // TODO: test details of ig control messages in more detail.
-        CigiControlPacket expected_control_packet[3];
-        CIGI_IG_CONTROL basic_ig_control = { CIGI_IG_CONTROL_SIZE, CIGI_IG_CONTROL_OPCODE };
-        expected_control_packet[0].data.ig_control = basic_ig_control;
-
-        CIGI_ENTITY_CONTROL expected_zero_entity_control =
-        {
-            CIGI_ENTITY_CONTROL_SIZE,
-            CIGI_ENTITY_CONTROL_OPCODE
-        };
-        expected_zero_entity_control.entity_state = CIGI_ACTIVE;
-        expected_zero_entity_control.collision_detect = CIGI_DISABLED;
-        expected_zero_entity_control.inherit_alpha = CIGI_DISABLED;
-        expected_zero_entity_control.smoothing_enable = CIGI_DISABLED;
-        expected_zero_entity_control.extended_entity_type = CIGI_DISABLED;
-        // 2 bits reserved
-        expected_zero_entity_control.alpha = 0xFF; // Full opacity
-        expected_zero_entity_control.entity_id = 0;
-        expected_zero_entity_control.entity_kind = 0; // TODO: Support SISO-REF-010 entity types
-        expected_zero_entity_control.entity_domain = 0;
-        expected_zero_entity_control.entity_country_type = 0;
-        expected_zero_entity_control.entity_category = 0;
-        expected_zero_entity_control.entity_subcategory = 0;
-        expected_zero_entity_control.entity_specific = 0;
-        expected_zero_entity_control.entity_extra = 0;
-
-        expected_control_packet[1].data.entity_control = expected_zero_entity_control;
 
 
         EXPECT_CALL(*gep_proxy_, GEP_HandleSimulationControlMessages(_, _, Pointee(Ge(2))))
@@ -133,7 +109,6 @@ namespace gep_xpw_ut {
                 Contains(Truly(EntityControlThatIndicatesMainAircraftEntity)), 
                 Contains(Truly(EntityPositionThatIndicatesMainAircraftCameraState)))))
             .WillOnce(Return(0));
-
 
         float flight_loop_rv = flight_loop_cb(0.0f, 0.0f, 1, 0);
         EXPECT_NE(flight_loop_rv, 0);
