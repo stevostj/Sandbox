@@ -27,7 +27,6 @@ struct CigiControlPacket {
 struct CigiResponsePacket {
 	union {
 		CIGI_START_OF_FRAME start_of_frame;
-		CIGI_HAT_HOT_RESPONSE hat_hot_response;
 		// TODO: Add complete set of CIGI reponse packets
 	} data;
 };
@@ -36,9 +35,9 @@ struct CigiResponsePacket {
 
 GEP_DECLSPEC int GEP_Initialize();
 
-GEP_DECLSPEC int GEP_HandleStartOfFrameMessages(char ** messages_in, char ** messages_out);
+GEP_DECLSPEC int GEP_HandleSimulationResponseMessages(CigiResponsePacket * packets, int max_num_packets, int * num_packets);
 
-GEP_DECLSPEC int GEP_HandleSimulationControlMessages(CigiControlPacket * packets, int max_num_packets, short * num_packets);
+GEP_DECLSPEC int GEP_HandleSimulationControlMessages(CigiControlPacket * packets, int max_num_packets, int * num_packets);
 
 
 #ifdef __cplusplus

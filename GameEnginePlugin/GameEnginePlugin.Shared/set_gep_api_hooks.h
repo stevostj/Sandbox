@@ -22,10 +22,10 @@ extern "C" {
 		typedef int(__stdcall* InitializeFunc)();
 		InitializeFunc Initialize;
 
-		typedef int(__stdcall* HandleStartOfFrameMessagesFunc)(char**, char**);
-		HandleStartOfFrameMessagesFunc HandleStartOfFrameMessages;
+		typedef int(__stdcall* HandleSimulationResponseMessagesFunc)(CigiResponsePacket*, int, int*);
+		HandleSimulationResponseMessagesFunc HandleSimulationResponseMessages;
 
-		typedef int (__stdcall* HandleSimulationControlMessagesFunc)(CigiControlPacket*, int, short*);
+		typedef int (__stdcall* HandleSimulationControlMessagesFunc)(CigiControlPacket*, int, int*);
 		HandleSimulationControlMessagesFunc HandleSimulationControlMessages;
 
 	};

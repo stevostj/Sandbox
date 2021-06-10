@@ -7,7 +7,8 @@ namespace gep_xpw_ut {
 	MockGEPProxy::~MockGEPProxy()
 	{
 		gep_initialize_handler_ = nullptr;
-		gep_handlestartofframemessages_handler_ = nullptr;
+		gep_handlesimulationcontrolmessages_handler_ = nullptr;
+		gep_handlesimulationresponsemessages_handler_ = nullptr;
 	}
 
 }

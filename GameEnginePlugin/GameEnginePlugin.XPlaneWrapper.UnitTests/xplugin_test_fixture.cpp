@@ -128,7 +128,7 @@ namespace gep_xpw_ut {
 
             // Hook in alternative functions to GEP APIs
             gep_proxy_->get_GEPApi().Initialize = gep_proxy_->get_GEP_InitializeHandler();
-            gep_proxy_->get_GEPApi().HandleStartOfFrameMessages = gep_proxy_->get_GEP_HandleStartOfFrameMessagesHandler();
+            gep_proxy_->get_GEPApi().HandleSimulationResponseMessages = gep_proxy_->get_GEP_HandleSimulationResponseMessagesHandler();
             gep_proxy_->get_GEPApi().HandleSimulationControlMessages = gep_proxy_->get_GEP_HandleSimulationControlMessagesHandler();
 
             setgepapihooks_rv = setgepapihooks_func(&(gep_proxy_->get_GEPApi()));

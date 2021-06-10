@@ -32,9 +32,9 @@ namespace {
 			(GEPApi::InitializeFunc) ::GetProcAddress(plugin_handle, "GEP_Initialize");
 		GepApi.Initialize = initialize_func;
 
-		GEPApi::HandleStartOfFrameMessagesFunc handlestartofframemessages_func =
-			(GEPApi::HandleStartOfFrameMessagesFunc) ::GetProcAddress(plugin_handle, "GEP_HandleStartOfFrameMessages");
-		GepApi.HandleStartOfFrameMessages = handlestartofframemessages_func;
+		GEPApi::HandleSimulationResponseMessagesFunc handlesimulationresponsemessages_func =
+			(GEPApi::HandleSimulationResponseMessagesFunc) ::GetProcAddress(plugin_handle, "GEP_HandleSimulationResponseMessages");
+		GepApi.HandleSimulationResponseMessages = handlesimulationresponsemessages_func;
 
 		GEPApi::HandleSimulationControlMessagesFunc handlesimulationcontrolmessages_func =
 			(GEPApi::HandleSimulationControlMessagesFunc) ::GetProcAddress(plugin_handle, "GEP_HandleSimulationControlMessages");
@@ -163,6 +163,17 @@ CIGI_IG_CONTROL GenerateIgControl()
 	return ig_ctrl;
 }
 
+CIGI_START_OF_FRAME GenerateStartOfFrame()
+{
+	CIGI_START_OF_FRAME start_of_frame = {};
+	start_of_frame.packet_size = CIGI_START_OF_FRAME_SIZE;
+	start_of_frame.packet_id = CIGI_START_OF_FRAME_OPCODE;
+	start_of_frame.cigi_major_version = CIGI_VERSION;
+	start_of_frame.minor_version = 0;
+	// TODO: populate more relevant start of frame fields
+
+	return start_of_frame;
+}
 
 // TODO: Move this into its own file/class
 int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon)
@@ -175,6 +186,13 @@ int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon)
 		1,        // Use alpha blending, e.g. glEnable(GL_BLEND);
 		0,        // No depth read, e.g. glDisable(GL_DEPTH_TEST);
 		0);        // No depth write, e.g. glDepthMask(GL_FALSE);
+
+	const int kMaxNumPackets = 100;
+	CigiResponsePacket packets[kMaxNumPackets];
+	packets[0].data.start_of_frame = GenerateStartOfFrame();
+
+	int num_packets = 1;
+	GepApi.HandleSimulationResponseMessages(packets, kMaxNumPackets, &num_packets);
 
 	return 1;
 }
@@ -193,7 +211,7 @@ float XPLMFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSi
 	packets[2].data.entity_position = GenerateEntityPosition(camera_position);
 	packets[3].data.view_control = GenerateViewControl();
 
-	short num_packets = 4;
+	int num_packets = 4;
 	GepApi.HandleSimulationControlMessages(packets, kMaxNumPackets, &num_packets);
 
 	return -1.0; // schedules xplane to call this function in the next flight loop

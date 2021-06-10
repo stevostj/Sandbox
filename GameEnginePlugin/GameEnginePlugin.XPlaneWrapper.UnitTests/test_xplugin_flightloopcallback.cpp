@@ -43,19 +43,12 @@ namespace gep_xpw_ut {
 
     }
 
-    bool ViewControlThatIsLockedToMainAircraftEntity(CigiControlPacket const & packet)
+    bool IgControlThatIsValid(CigiControlPacket const& packet)
     {
-        CIGI_VIEW_CONTROL const & view_control = packet.data.view_control;
-        return (view_control.packet_size == CIGI_VIEW_CONTROL_SIZE && 
-                view_control.packet_id == CIGI_VIEW_CONTROL_OPCODE &&
-                view_control.view_id == 1 &&
-                view_control.entity_id == 0 &&
-                view_control.xoffset == 0.0f &&
-                view_control.yoffset == 0.0f &&
-                view_control.zoffset == 0.0f &&
-                view_control.roll == 0.0f &&
-                view_control.pitch == 0.0f &&
-                view_control.yaw == 0.0f);
+        CIGI_IG_CONTROL const& ig_control = packet.data.ig_control;
+        return (ig_control.packet_size == CIGI_IG_CONTROL_SIZE &&
+            ig_control.packet_id == CIGI_IG_CONTROL_OPCODE &&
+            ig_control.ig_mode == IG_CONTROL_IG_MODE_OPERATE);
     }
 
     bool EntityControlThatIndicatesMainAircraftEntity(CigiControlPacket const& packet)
@@ -84,6 +77,21 @@ namespace gep_xpw_ut {
             ApproximatelyEqual(entity_position.yaw, 45.6f, kTolerance));
     }
 
+    bool ViewControlThatIsLockedToMainAircraftEntity(CigiControlPacket const& packet)
+    {
+        CIGI_VIEW_CONTROL const& view_control = packet.data.view_control;
+        return (view_control.packet_size == CIGI_VIEW_CONTROL_SIZE &&
+            view_control.packet_id == CIGI_VIEW_CONTROL_OPCODE &&
+            view_control.view_id == 1 &&
+            view_control.entity_id == 0 &&
+            view_control.xoffset == 0.0f &&
+            view_control.yoffset == 0.0f &&
+            view_control.zoffset == 0.0f &&
+            view_control.roll == 0.0f &&
+            view_control.pitch == 0.0f &&
+            view_control.yaw == 0.0f);
+    }
+
     TEST_F(XPluginTestFixture, TestXPluginFlightLoopCallbackForwardsCameraStatesToGep)
     {
 
@@ -91,6 +99,7 @@ namespace gep_xpw_ut {
         EXPECT_NE(flight_loop_cb, nullptr);
 
         // Set up XPLM Camera calls
+        // TODO: Test position in each +- x/y/z combination
         XPLMCameraPosition_t zero_camera_position;
         zero_camera_position.x = 12.34f;
         zero_camera_position.y = 56.78f;
@@ -100,11 +109,12 @@ namespace gep_xpw_ut {
         zero_camera_position.roll = 78.9f;
         zero_camera_position.zoom = 1.0f;
 
-        EXPECT_CALL(*camera_proxy_, XPLMReadCameraPosition(_)).WillOnce(DoAll(SetArgPointee<0>(zero_camera_position)));
+        EXPECT_CALL(*camera_proxy_, XPLMReadCameraPosition(NotNull())).WillOnce(DoAll(SetArgPointee<0>(zero_camera_position)));
 
 
-        EXPECT_CALL(*gep_proxy_, GEP_HandleSimulationControlMessages(_, _, Pointee(Ge(2))))
+        EXPECT_CALL(*gep_proxy_, GEP_HandleSimulationControlMessages(NotNull(), Ge(4), Pointee(Ge(4))))
             .With(Args<0, 1>(AllOf(
+                Contains(Truly(IgControlThatIsValid)), 
                 Contains(Truly(ViewControlThatIsLockedToMainAircraftEntity)), 
                 Contains(Truly(EntityControlThatIndicatesMainAircraftEntity)), 
                 Contains(Truly(EntityPositionThatIndicatesMainAircraftCameraState)))))

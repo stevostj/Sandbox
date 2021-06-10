@@ -42,7 +42,7 @@ namespace gep_xpw {
 			(gep_api_hooks != nullptr) &&
 			(gep_api_hooks->Initialize != nullptr) &&
 			(gep_api_hooks->HandleSimulationControlMessages != nullptr) && 
-			(gep_api_hooks->HandleStartOfFrameMessages != nullptr);
+			(gep_api_hooks->HandleSimulationResponseMessages != nullptr);
 
 		return hooks_ok;
 	}
