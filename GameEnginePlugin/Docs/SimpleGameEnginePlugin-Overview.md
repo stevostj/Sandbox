@@ -59,3 +59,13 @@ The XPlane Wrapper Initialization is as follows:
  4. The host calls the *XPluginStart* function and callbacks are registered for the XPlane flight loop and rendering of frames.
 
 ![](./XPlaneWrapper-Initialization.png)
+
+#### **Execution**
+
+The XPlane Wrapper Execution is as follows:
+ 1. The XPlaneWrapper library *Draw Callback* is called by host (test host or X-Plane itself) periodically.
+ 2. The *Draw Callback* function generates a simulation response message and passed it in as an argument in the GEP_HandleSimulationResponseMessages function to plugins.
+ 3. The XPlaneWrapper library *Flight Loop Callback* is called by host (test host or X-Plane itself) periodically.
+ 4. The *Flight Loop Callback* function generates a simulation control message (to include basic state information about the aircraft being controlled) and passed it in as an argument in the GEP_HandleSimulationControlMessages function to plugins.
+
+![](./XPlaneWrapper-Execution.png)

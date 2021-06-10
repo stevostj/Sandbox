@@ -4,6 +4,28 @@ title "GameEnginePluginInterface"
 
 interface "IGameEnginePlugin"  as IGEP {
     + {static} <<extern C>> int GEP_Initialize()
+    + {static} <<extern C>> int GEP_HandleSimulationHostMessages()
+
+}
+
+class "StartOfFrame" {
+
+}
+
+class "SymbolSurface" {
+
+}
+
+class "SymbolControl" {
+
+}
+
+class "SymbolTextDefinition" {
+
+}
+
+class "SymbolPolygonDefinition" {
+    
 }
 
 @enduml

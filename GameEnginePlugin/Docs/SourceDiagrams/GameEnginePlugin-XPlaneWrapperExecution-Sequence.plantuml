@@ -12,16 +12,15 @@ activate XPWH
 
 XPWH -> XPW: DrawCallback
 activate XPW
-XPW -> XPW: StoreRenderingFrameResponses as RESPONSES
 XPW -> XPWH: api_hooks.XPLMGraphics.SetGraphicsState
 activate XPWH
 XPWH --> XPW
 deactivate XPWH
 XPW -> XPW: RenderCachedSymbology(SYMBOLS)
-XPW -> XPW: GenerateSoFMessages(RESPONSES, SHMSG) as SOFMSG
-XPW -> GEP: HandleStartofFrameMessages(SOFMSG)
+XPW -> XPW: GenerateCigiResponsePacketMessages as SIMRESPKT
+XPW -> GEP: GEP_HandleSimulationResponseMessages(SIMRESPKT)
 activate GEP
-GEP -> GEP: Store SOFMSG as GEP.RESPONSES
+GEP -> GEP: Store SIMRESPKT as GEP.RESPONSES
 GEP --> XPW
 deactivate GEP
 XPW --> XPWH
@@ -35,24 +34,27 @@ activate XPWH
 
 XPWH -> XPW: FlightLoopCallback
 activate XPW
-XPW -> XPW: GenerateSimHostMessages(RESPONSES) as SHMSG
+XPW -> XPW: GEP_GenerateCigSimulationControlMessages as SIMRESPKT
 activate XPW
 XPW -> XPWH: api_hooks.XPLMCamera.XPLMReadCameraPosition
 activate XPWH
 XPWH --> XPW: CAMPOS
 deactivate XPWH
-XPW -> XPW: Convert(CAMPOS)
+XPW -> XPW: GenerateEntityPosition(CAMPOS)
 activate XPW
-XPW --> XPW: CIGI View Control as VIEWMSG
+XPW --> XPW: CIGI Entity Position as EPOSMSG
 deactivate XPW
-XPW -> XPW: Add VIEWMSG to SHMSG
+XPW -> XPW: GenerateViewControl()
+activate XPW
+XPW --> XPW: CIGI View Control as VCMSG
 deactivate XPW
 
-XPW -> GEP: HandleSimulationHostMessages(SHMSG)
+XPW -> GEP: HandleSimulationControlMessages({EPOSMSG, VCMSG} as SIMCTRLPKT)
 activate GEP
+GEP -> GEP: Add/Remove/Update messages in SIMCTRLPKT
 GEP --> XPW
 deactivate GEP
-XPW -> XPW: Store SHMSG Symbology Messages as SYMBOLS
+XPW -> XPW: Store SIMCTRLPKT Symbology Messages as SYMBOLS
 XPW --> XPWH
 deactivate XPW
 deactivate XPWH

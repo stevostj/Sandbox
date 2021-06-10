@@ -8,6 +8,7 @@ frame "XPlane" as HA {
 () "IGameEnginePlugin" as IGEP
 () "XPlugin" as IXP
 () "SetXplmApiHooks" as IXPLMAPI
+() "SetGepApiHooks" as IGEPAPI
 }
 
 note left of HA
@@ -20,6 +21,7 @@ IGEP -- GEP
 
 IXP -- XPW
 IXPLMAPI -- XPW
+IGEPAPI -- XPW
 
 XPW <..> IGEP
 
