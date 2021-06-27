@@ -17,6 +17,10 @@ activate XPWH
 XPWH --> XPW
 deactivate XPWH
 XPW -> XPW: RenderCachedSymbology(SYMBOLS)
+activate XPW
+XPW -> XPWH: OpenGL Function Calls
+XPWH --> XPW
+deactivate XPW
 XPW -> XPW: GenerateCigiResponsePacketMessages as SIMRESPKT
 XPW -> GEP: GEP_HandleSimulationResponseMessages(SIMRESPKT)
 activate GEP
