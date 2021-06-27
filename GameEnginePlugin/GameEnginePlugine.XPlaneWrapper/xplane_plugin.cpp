@@ -46,7 +46,7 @@ namespace {
 	bool InitializeGep(HINSTANCE& plugin_handle, GEPApi& gep_api)
 	{
 		bool rv = true;
-		if (plugin_handle == 0 && !gep_xpw::CheckHookStructures(&GepApi)) // assumes api hooks to stub out plugin are done prior initialize
+		if (plugin_handle == 0 && !gep_xpw::CheckHookStructures(&GepApi)) // assumes api hooks to stub out plugin in unit test context are done prior to initialize
 		{
 			plugin_handle = LoadGameEnginePluginLibraries();
 			rv = (hGepHandle != 0) && SetGepApiHooksToPluginFunctions(plugin_handle);

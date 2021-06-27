@@ -34,7 +34,7 @@ namespace gep_xpw {
 	/// <summary>
 	/// Ensure that the API hooks are not null. 
 	/// </summary>
-	/// <param name="gep_api_hooks"></param>
+	/// <param name="gep_api_hooks">Contains pointers to functions to</param>
 	/// <returns></returns>
 	bool CheckHookStructures(GEPApi const* gep_api_hooks)
 	{

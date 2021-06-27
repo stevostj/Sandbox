@@ -33,6 +33,8 @@ struct CigiResponsePacket {
 
 #define GEP_INITIALIZE_OK 0
 
+#define GEP_MESSAGES_HANDLED_OK 0
+
 GEP_DECLSPEC int GEP_Initialize();
 
 GEP_DECLSPEC int GEP_HandleSimulationResponseMessages(CigiResponsePacket * packets, int max_num_packets, int * num_packets);

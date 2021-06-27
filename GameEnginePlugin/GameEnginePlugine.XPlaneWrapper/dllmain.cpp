@@ -58,6 +58,16 @@ namespace {
         return SetXplmApiHooks(&XplmDisplayApi, &XplmGraphicsApi, &XplmProcessingApi, &XplmCameraApi);
     }
 
+    /// <summary>
+    /// Default GEP API hooks to null
+    /// </summary>
+    void SetDefaultGepApiHooks()
+    {
+        GepApi.Initialize = nullptr;
+        GepApi.HandleSimulationControlMessages = nullptr;
+        GepApi.HandleSimulationResponseMessages = nullptr;
+    }
+
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
@@ -68,6 +78,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
         case DLL_PROCESS_ATTACH: 
         {
             SetDllPaths(hModule);
+            SetDefaultGepApiHooks();
             if (SetDefaultXplmApiHooks() != 0)
                 rv = FALSE;
 
