@@ -18,10 +18,14 @@ extern GEPApi GepApi;
 
 extern gep_xpw::SymbolSurface Symbols; // assume only a single surface
 
-// TODO: Move this into its own file/class
+/// <summary>
+/// Should only be called by X-Plane. A pointer to this function is registered as a callback. 
+/// </summary>
 extern int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon);
 
-// TODO: Move this into its own file/class
-float XPLMFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSinceLastFlightLoop, int inCounter, void* inRefcon);
+/// <summary>
+/// Should only be called by X-Plane. A pointer to this function is registered as a callback. 
+/// </summary>
+extern float XPLMFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSinceLastFlightLoop, int inCounter, void* inRefcon);
 
 #endif

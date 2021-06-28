@@ -34,8 +34,10 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="plugin_test_fixture.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="plugin_test_fixture.cpp" />
     <ClCompile Include="test._initialize.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -88,7 +88,7 @@ namespace gep_xpw_ut {
         float flight_loop_rv = flight_loop_cb(0.0f, 0.0f, 1, 0);
         EXPECT_EQ(flight_loop_rv, -1.0f); // Expect a return value that will schedule handling of the next flight loop.
 
-        // TODO: Test that a vertical line has actually been rendered to a 'screen'. 
+        // FUTURE: Test that a vertical line has actually been rendered to a 'screen'. 
         // Will involve initializing OpenGL in the unit test project, which is a rabbit hole
         // I don't particularly go down at this point in time. If I were getting paid to do this, absolutely. 
 

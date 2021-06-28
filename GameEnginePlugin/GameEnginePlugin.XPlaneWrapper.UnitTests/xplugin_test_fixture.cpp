@@ -21,7 +21,6 @@ using ::testing::Ne;
 
 namespace gep_xpw_ut {
 
-
         void XPluginTestFixture::SetUp() 
         {
             LoadPlugin();

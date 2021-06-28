@@ -22,12 +22,15 @@ namespace {
 
 	HINSTANCE LoadGameEnginePluginLibraries()
 	{
-		// TODO: find plugin(s) in the directory instead of hardcoding the name.
+		// FUTURE: find plugin(s) in the directory instead of hardcoding the name.
 		std::wstring lib_path = DllPath + L"\\ExampleGameEnginePlugin.dll";
 
 		return ::LoadLibrary((LPWSTR)lib_path.c_str());
 	}
 
+	/// <summary>
+	/// Find functions dynamically a plugin and store pointers to them in a global variable. 
+	/// </summary>
 	bool SetGepApiHooksToPluginFunctions(HINSTANCE plugin_handle)
 	{
 		GEPApi::InitializeFunc initialize_func =
@@ -45,6 +48,9 @@ namespace {
 		return gep_xpw::CheckHookStructures(&GepApi);
 	}
 
+	/// <summary>
+	/// Sets GEP functions if they have not already been injected by the host. 
+	/// </summary>
 	bool InitializeGep(HINSTANCE& plugin_handle, GEPApi& gep_api)
 	{
 		bool rv = true;
@@ -57,6 +63,9 @@ namespace {
 		return rv;
 	}
 
+	/// <summary>
+	/// Registers the draw callback with X-Plane and initializes the symbol surface with the necessary XPLM APIs. 
+	/// </summary>
 	int InitializeSymbologyRendering()
 	{
 		int rv = XplmDisplayApi.RegisterDrawCallback(XPLMDrawCallback, xplm_Phase_LastCockpit, 1 /*end of phase*/, nullptr);
@@ -67,6 +76,9 @@ namespace {
 		return rv;
 	}
 
+	/// <summary>
+	/// Registers the flight loop callback with X-Plane.
+	/// </summary>
 	void InitializeSimulationFrameHandler()
 	{
 		XplmProcessingApi.RegisterFlightLoopCallback(XPLMFlightLoopCallback, -1.0 /* schedule for first flight loop */, nullptr);
@@ -118,7 +130,7 @@ CIGI_ENTITY_CONTROL GenerateEntityControl()
 	// 2 bits reserved
 	entity_control.alpha = 0xFF; // Full opacity
 	entity_control.entity_id = 0; // Assume that the initial aircraft being flown is entity 0
-	entity_control.entity_kind = 0; // TODO: Support SISO-REF-010 entity types
+	entity_control.entity_kind = 0; // FUTURE: Support SISO-REF-010 entity types
 	entity_control.entity_domain = 0;
 	entity_control.entity_country_type = 0;
 	entity_control.entity_category = 0;
@@ -196,6 +208,9 @@ void UpdateSymbols(CigiControlPacket* packets, int num_packets)
 	Symbols.Update(polygons);
 }
 
+/// <summary>
+/// Renders symbols and sends simulation response messages to game engine plugins. 
+/// </summary>
 int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon)
 {
 
@@ -211,7 +226,10 @@ int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon)
 	return 1;
 }
 
-// TODO: Move this into its own file/class
+/// <summary>
+/// Sends simulation control messages to game engine plugins based on state information from X-Plane, and processes
+/// messages added by game engine plugins.
+/// </summary>
 float XPLMFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSinceLastFlightLoop, int inCounter, void* inRefcon)
 {
 	const int kMaxNumPackets = 100;
@@ -233,6 +251,9 @@ float XPLMFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSi
 	return -1.0; // schedules xplane to call this function in the next flight loop
 }
 
+/// <summary>
+/// Called by X-Plane during its initialization
+/// </summary>
 PLUGIN_API int XPluginStart(
 							char *		outName,
 							char *		outSig,
@@ -257,9 +278,12 @@ PLUGIN_API int XPluginStart(
 	return xpluginstart_rv;
 }
 
+/// <summary>
+/// Called by X-Plane during its shutdown.
+/// </summary>
 PLUGIN_API void	XPluginStop(void)
 {
-	// TODO: Clean up resources
+	// FUTURE: Clean up resources
 }
 
 PLUGIN_API void XPluginDisable(void) { }
