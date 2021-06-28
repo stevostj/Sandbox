@@ -14,4 +14,4 @@ After downloading the repository as a zip file, extract the zip file, navigate t
 
 ## Where things are, Where they are headed
 
-
+Current progress and future ideas are being tracked [here](https://github.com/stevostj/Sandbox/projects/1).
