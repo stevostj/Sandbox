@@ -4,6 +4,7 @@
 #include <string>
 #include "set_xplm_api_hooks.h"
 #include "set_gep_api_hooks.h"
+#include "symbol_surface.h"
 
 extern std::wstring DllPathAndName;
 extern std::wstring DllPath;
@@ -14,6 +15,8 @@ extern XPLMProcessingApi XplmProcessingApi;
 extern XPLMCameraApi XplmCameraApi;
 
 extern GEPApi GepApi;
+
+extern gep_xpw::SymbolSurface Symbols; // assume only a single surface
 
 // TODO: Move this into its own file/class
 extern int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon);

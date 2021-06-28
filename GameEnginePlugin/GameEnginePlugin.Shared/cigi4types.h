@@ -814,6 +814,9 @@ extern "C" {
     };
 
 #define CIGI_SYMBOL_POLYGON_DEF_MAX_VERTEX_CNT  8188
+
+ // CHANGE NOTE: capped polygon vertex count to a much smaller number to allow for easier stack allocation
+#define CIGI_SYMBOL_POLYGON_DEF_MAX_PRACTICAL_VERTEX_CNT 100
     struct CIGI_SYMBOL_POLYGON_DEF {
         uint16_t packet_size;							/** Packet size = 256 bytes      */
         uint16_t packet_id;								/** Packet ID = 0x1f           */
@@ -826,13 +829,18 @@ extern "C" {
         float line_width;
         float stipple_pattern_length;
         uint32_t                : 32;
-        CIGI_POLYGON_DEF_ELEMENT line[CIGI_SYMBOL_POLYGON_DEF_MAX_VERTEX_CNT];
+        CIGI_POLYGON_DEF_ELEMENT line[CIGI_SYMBOL_POLYGON_DEF_MAX_PRACTICAL_VERTEX_CNT];
     };
 
 #define CIGI_SYMBOL_POLYGON_DEF_OPCODE    0x1f
 //#define CIGI_SYMBOL_POLYGON_DEF_SIZE      65528
 #define CIGI_SYMBOL_POLYGON_DEF_BASE_SIZE 24
 #define CIGI_SYMBOL_VERTEX_SIZE        8
+
+ // CHANGE NOTE: precalculated practical default size of polygon packets
+#define CIGI_SYMBOL_POLYGON_DEF_PRACTICAL_SIZE CIGI_SYMBOL_POLYGON_DEF_MAX_PRACTICAL_VERTEX_CNT*CIGI_SYMBOL_VERTEX_SIZE + CIGI_SYMBOL_POLYGON_DEF_BASE_SIZE
+
+
 
 /********************************************************************************************/
 

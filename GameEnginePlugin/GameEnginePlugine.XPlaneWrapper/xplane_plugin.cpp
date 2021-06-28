@@ -1,6 +1,8 @@
 #include <windows.h>
 #include <GL/gl.h>
 #include <string>
+#include <list>
+
 #include "XPLMDisplay.h"
 #include "XPLMGraphics.h"
 #include "game_engine_plugin_api.h"
@@ -55,15 +57,12 @@ namespace {
 		return rv;
 	}
 
-	// TODO: store this information into an object
-	static int ScreenHeight;
-	static int ScreenWidth;
-
 	int InitializeSymbologyRendering()
 	{
 		int rv = XplmDisplayApi.RegisterDrawCallback(XPLMDrawCallback, xplm_Phase_LastCockpit, 1 /*end of phase*/, nullptr);
 		XplmDisplayApi.DrawCallback = XPLMDrawCallback;
-		XplmDisplayApi.GetScreenSize(&ScreenWidth, &ScreenHeight);
+		if(rv != 0)
+		  rv = Symbols.Initialize(&XplmDisplayApi, &XplmGraphicsApi);
 
 		return rv;
 	}
@@ -136,7 +135,7 @@ CIGI_ENTITY_POSITION GenerateEntityPosition(XPLMCameraPosition_t & camera_positi
 	// This more or less means the 'camera position' that is reported is actually
 	// the aircraft position in the local coordinate system. 
 
-	// TODO: transform to geodetic coordinates
+	// FUTURE: transform to geodetic coordinates
 	CIGI_ENTITY_POSITION entity_position = {};
 	entity_position.packet_size = CIGI_ENTITY_POSITION_SIZE;
 	entity_position.packet_id = CIGI_ENTITY_POSITION_OPCODE;
@@ -158,7 +157,7 @@ CIGI_IG_CONTROL GenerateIgControl()
 	ig_ctrl.packet_id = CIGI_IG_CONTROL_OPCODE;
 	ig_ctrl.cigi_version = CIGI_VERSION;
 	ig_ctrl.ig_mode = IG_CONTROL_IG_MODE_OPERATE;
-	// TODO: populate more relevant IG control fields
+	// FUTURE: populate more relevant IG control fields
 
 	return ig_ctrl;
 }
@@ -170,22 +169,37 @@ CIGI_START_OF_FRAME GenerateStartOfFrame()
 	start_of_frame.packet_id = CIGI_START_OF_FRAME_OPCODE;
 	start_of_frame.cigi_major_version = CIGI_VERSION;
 	start_of_frame.minor_version = 0;
-	// TODO: populate more relevant start of frame fields
+	// FUTURE: populate more relevant start of frame fields
 
 	return start_of_frame;
 }
 
-// TODO: Move this into its own file/class
+/// <summary>
+/// Find symbology messages and update the symbol surface.
+/// </summary>
+void UpdateSymbols(CigiControlPacket* packets, int num_packets) 
+{
+	std::list<CIGI_SYMBOL_POLYGON_DEF> polygons;
+	for (int i = 0; i < num_packets; ++i)
+	{
+		if (packets[i].data.symbol_surface_definition.packet_id == CIGI_SYMBOL_SURFACE_DEF_OPCODE)
+		{
+			Symbols.Update(packets[i].data.symbol_surface_definition);
+		}
+		else if (packets[i].data.symbol_polygon_definition.packet_id == CIGI_SYMBOL_POLYGON_DEF_OPCODE) 
+		{
+			polygons.push_back(packets[i].data.symbol_polygon_definition);
+		}
+
+	}
+
+	Symbols.Update(polygons);
+}
+
 int XPLMDrawCallback(XPLMDrawingPhase inPhase, int inIsBefore, void* inRefcon)
 {
-	XplmGraphicsApi.SetGraphicsState(
-		0,        // No fog, equivalent to glDisable(GL_FOG);
-		1,        // One texture, equivalent to glEnable(GL_TEXTURE_2D);
-		0,        // No lighting, equivalent to glDisable(GL_LIGHT0);
-		0,        // No alpha testing, e.g glDisable(GL_ALPHA_TEST);
-		1,        // Use alpha blending, e.g. glEnable(GL_BLEND);
-		0,        // No depth read, e.g. glDisable(GL_DEPTH_TEST);
-		0);        // No depth write, e.g. glDepthMask(GL_FALSE);
+
+	Symbols.Render();
 
 	const int kMaxNumPackets = 100;
 	CigiResponsePacket packets[kMaxNumPackets];
@@ -214,6 +228,8 @@ float XPLMFlightLoopCallback(float inElapsedSinceLastCall, float inElapsedTimeSi
 	int num_packets = 4;
 	GepApi.HandleSimulationControlMessages(packets, kMaxNumPackets, &num_packets);
 
+	UpdateSymbols(packets, num_packets);
+
 	return -1.0; // schedules xplane to call this function in the next flight loop
 }
 
@@ -233,7 +249,7 @@ PLUGIN_API int XPluginStart(
 	int xpluginstart_rv = (gep_initialize_ok && gep_xpw::CheckHookStructures(&XplmDisplayApi, &XplmGraphicsApi, &XplmProcessingApi, &XplmCameraApi)) ? 1 : 0;
 	
 	if (xpluginstart_rv != 0)
-		xpluginstart_rv = InitializeSymbologyRendering(); // TODO: Create a 'canvas' class to store this information
+		xpluginstart_rv = InitializeSymbologyRendering();
 
 	if(xpluginstart_rv != 0)
 	  InitializeSimulationFrameHandler();

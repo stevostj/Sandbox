@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gep_proxy.cpp" />
+    <ClCompile Include="helper_methods.cpp" />
+    <ClCompile Include="test_symbology_rendering.cpp" />
     <ClCompile Include="test_xplugin_flightloopcallback.cpp" />
     <ClCompile Include="test_xplugin_drawcallback.cpp" />
     <ClCompile Include="xlmprocessing_proxy.cpp" />

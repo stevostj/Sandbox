@@ -8,6 +8,7 @@
 
 #include "XPLMDisplay.h"
 #include "xplane_plugin.h"
+#include "symbol_surface.h"
 
 // globals
 HMODULE hMod;
@@ -17,6 +18,8 @@ XPLMDisplayApi XplmDisplayApi;
 XPLMGraphicsApi XplmGraphicsApi;
 XPLMProcessingApi XplmProcessingApi;
 XPLMCameraApi XplmCameraApi;
+
+gep_xpw::SymbolSurface Symbols;
 
 namespace {
 
