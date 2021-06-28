@@ -6,6 +6,8 @@ This repository currently includes a single concept for a simple 'game engine pl
 
 Given that commercial simulation and image generator applications can have a wide variety of capabilities through their SDKs, the intent of this framework to allow *simple* things to be ported between different hosts and leave the specifics to interoperation layers that can be written for the host in question. 
 
+This concept explores the ideas of test-driven development, mocking via gMock, dependency injection, maximization of compatibility via choice of programming language (c-style interfaces) and open standard  interfaces (SISO CIGI 4.0) as software engineering practices that can reduce the burden of integration in this context. 
+
 ## Running the Concept
 
 This project was developed on Windows 10 using Visual Studio 2019 Community Edition. Currently, X-Plane 11 trial version is used as a host application. It will need to be installed in order to run the example game engine plugin with X-Plane.
