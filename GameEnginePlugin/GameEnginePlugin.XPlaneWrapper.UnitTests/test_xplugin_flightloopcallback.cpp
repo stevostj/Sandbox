@@ -34,10 +34,10 @@ namespace gep_xpw_ut {
         XPLMFlightLoop_f flight_loop_cb = processing_proxy_->get_XPLMProcessingApi().FlightLoopCallback;
         EXPECT_NE(flight_loop_cb, nullptr);
 
-        // TODO: test details of ig control message.
+        // FUTURE: test details of ig control message.
         EXPECT_CALL(*gep_proxy_, GEP_HandleSimulationControlMessages(NotNull(), 100, NotNull()));
 
-        // TODO: emulate behavior of repeating flight loop calls
+        // FUTURE: emulate behavior of repeating flight loop calls
         float flight_loop_rv = flight_loop_cb(0.0f, 0.0f, 1, 0);
         EXPECT_EQ(flight_loop_rv, -1.0f); // Expect a return value that will schedule handling of the next flight loop.
 
@@ -60,7 +60,7 @@ namespace gep_xpw_ut {
             entity_control.entity_state == CIGI_ACTIVE);
     }
 
-    // TODO: do a conversion from local plane coordinates to geodetic
+    // FUTURE: do a conversion from local plane coordinates to geodetic
     bool EntityPositionThatIndicatesMainAircraftCameraState(CigiControlPacket const& packet)
     {
         static const double kToleranceDouble = 0.001;

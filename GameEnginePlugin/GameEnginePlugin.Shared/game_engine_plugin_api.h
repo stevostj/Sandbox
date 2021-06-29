@@ -22,14 +22,14 @@ struct CigiControlPacket {
 		CIGI_VIEW_CONTROL view_control;
 		CIGI_SYMBOL_SURFACE_DEF symbol_surface_definition;
 		CIGI_SYMBOL_POLYGON_DEF symbol_polygon_definition;
-		// TODO: Add complete set of CIGI control packets
+		// FUTURE: Add complete set of CIGI control packets
 	} data; 
 };
 
 struct CigiResponsePacket {
 	union {
 		CIGI_START_OF_FRAME start_of_frame;
-		// TODO: Add complete set of CIGI reponse packets
+		// FUTURE: Add complete set of CIGI reponse packets
 	} data;
 };
 
