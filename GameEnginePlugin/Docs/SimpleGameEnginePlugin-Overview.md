@@ -19,8 +19,8 @@ The general lifecycle of game engine plugins is as follows:
  1. The Host Application creates an interoperation layer during its initialization.
     - This initialization is host-specific and would likely consist of loading its own 'wrapper plugins'.
     - The *GameEnginePlugin* project includes interopation examples with *X-Plane 11* and **TBD**. 
- 2. The Host Application interoperation layer dynamically loads libraries that implement *GameEnginePlugin* free functions calls their *GEP_Initialize" functions.
- 3. **IN PROGRESS:** During normal operation, the Host Application will update its state and convert relevant *Simulation Host* state information to structures passed to *GEP_HandleHostControlMessages* function calls.
+ 2. The Host Application interoperation layer dynamically loads libraries that implement *GameEnginePlugin* free functions calls their *GEP_Initialize* functions.
+ 3. During normal operation, the Host Application will update its state and convert relevant *Simulation Host* state information to structures passed to *GEP_HandleSimulationControlMessages* function calls.
  4. **FUTURE:** Add handling of Host Response messages.
  5. **FUTURE:** Add Shutdown operation.
 
@@ -59,3 +59,14 @@ The XPlane Wrapper Initialization is as follows:
  4. The host calls the *XPluginStart* function and callbacks are registered for the XPlane flight loop and rendering of frames.
 
 ![](./XPlaneWrapper-Initialization.png)
+
+#### **Execution**
+
+The XPlane Wrapper Execution is as follows:
+ 1. The XPlaneWrapper library *Draw Callback* is called by host (test host or X-Plane itself) periodically.
+ 2. The *Draw Callback* function will make appropriate calls to the host application to command it render updates to the scene and/or overlay symbology.
+ 3. The *Draw Callback* function generates a simulation response message and passed it in as an argument in the GEP_HandleSimulationResponseMessages function to plugins.
+ 4. The XPlaneWrapper library *Flight Loop Callback* is called by host (test host or X-Plane itself) periodically.
+ 5. The *Flight Loop Callback* function generates a simulation control message (to include basic state information about the aircraft being controlled) and passed it in as an argument in the GEP_HandleSimulationControlMessages function to plugins.
+
+![](./XPlaneWrapper-Execution.png)

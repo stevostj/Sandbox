@@ -2,8 +2,72 @@
 
 title "GameEnginePluginInterface"
 
+top to bottom direction
+
 interface "IGameEnginePlugin"  as IGEP {
     + {static} <<extern C>> int GEP_Initialize()
+    + {static} <<extern C>> int GEP_HandleSimulationControlMessages(CigiResponsePacket * packets, int max_num_packets, int * num_packets)
+    + {static} <<extern C>> int GEP_HandleSimulationResponseMessages(CigiControlPacket * packets, int max_num_packets, int * num_packets)
+
+}
+
+class "CigiResponsePacket" {
+    + CigiReponsePacketData data
+}
+
+class CigiResponsePacketData <<union>> {
+    + StartOfFrame start_of_frame
+}
+
+class "CigiControlPacket" {
+    + CigiControlPacketData data
+}
+
+class CigiControlPacketData <<union>> {
+    + IgControl ig_control
+    + EntityControl entity_control
+    + EntityPosition entity_position
+    + ViewControl view_control
+}
+
+package "CIGI 4.0 Packets" as CIGI {
+
+    class "StartOfFrame" {
+
+    }
+
+    class "IgControl" {
+
+    }
+
+    class "EntityControl" {
+
+    }
+
+    class "EntityPosition" {
+
+    }
+
+    class "ViewControl" {
+
+    }
+
+    class "SymbolSurface" {
+
+    }
+
+    class "SymbolControl" {
+
+    }
+
+    class "SymbolTextDefinition" {
+
+    }
+
+    class "SymbolPolygonDefinition" {
+        
+    }
+
 }
 
 @enduml

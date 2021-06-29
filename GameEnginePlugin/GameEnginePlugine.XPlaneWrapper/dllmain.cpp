@@ -8,6 +8,7 @@
 
 #include "XPLMDisplay.h"
 #include "xplane_plugin.h"
+#include "symbol_surface.h"
 
 // globals
 HMODULE hMod;
@@ -16,6 +17,9 @@ std::wstring DllPath;
 XPLMDisplayApi XplmDisplayApi;
 XPLMGraphicsApi XplmGraphicsApi;
 XPLMProcessingApi XplmProcessingApi;
+XPLMCameraApi XplmCameraApi;
+
+gep_xpw::SymbolSurface Symbols;
 
 namespace {
 
@@ -45,16 +49,26 @@ namespace {
     /// </summary>
     int SetDefaultXplmApiHooks() 
     {
-        XPLMDisplayApi display_api_hooks;
-        display_api_hooks.RegisterDrawCallback = &XPLMRegisterDrawCallback;
+        XplmDisplayApi.RegisterDrawCallback = &XPLMRegisterDrawCallback;
+        XplmDisplayApi.GetScreenSize = &XPLMGetScreenSize;
 
-        XPLMGraphicsApi graphics_api_hooks;
-        graphics_api_hooks.SetGraphicsState = &XPLMSetGraphicsState;
+        XplmGraphicsApi.SetGraphicsState = &XPLMSetGraphicsState;
 
-        XPLMProcessingApi processing_api_hooks;
-        processing_api_hooks.RegisterFlightLoopCallback = &XPLMRegisterFlightLoopCallback;
+        XplmProcessingApi.RegisterFlightLoopCallback = &XPLMRegisterFlightLoopCallback;
 
-        return SetXplmApiHooks(display_api_hooks, graphics_api_hooks, processing_api_hooks);
+        XplmCameraApi.ReadCameraPosition = &XPLMReadCameraPosition;
+
+        return SetXplmApiHooks(&XplmDisplayApi, &XplmGraphicsApi, &XplmProcessingApi, &XplmCameraApi);
+    }
+
+    /// <summary>
+    /// Default GEP API hooks to null
+    /// </summary>
+    void SetDefaultGepApiHooks()
+    {
+        GepApi.Initialize = nullptr;
+        GepApi.HandleSimulationControlMessages = nullptr;
+        GepApi.HandleSimulationResponseMessages = nullptr;
     }
 
 }
@@ -67,6 +81,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
         case DLL_PROCESS_ATTACH: 
         {
             SetDllPaths(hModule);
+            SetDefaultGepApiHooks();
             if (SetDefaultXplmApiHooks() != 0)
                 rv = FALSE;
 

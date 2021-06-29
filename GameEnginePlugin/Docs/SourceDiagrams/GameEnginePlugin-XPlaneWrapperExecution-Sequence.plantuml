@@ -1,0 +1,68 @@
+@startuml
+
+title "XPlaneWrapper-Execution"
+
+participant "XPlaneWrapperHost" as XPWH
+participant "XPlaneWrapper" as XPW
+participant "GameEnginePlugin" as GEP
+
+loop 
+XPWH -> XPWH: Redraw Scene
+activate XPWH
+
+XPWH -> XPW: DrawCallback
+activate XPW
+XPW -> XPWH: api_hooks.XPLMGraphics.SetGraphicsState
+activate XPWH
+XPWH --> XPW
+deactivate XPWH
+XPW -> XPW: RenderCachedSymbology(SYMBOLS)
+activate XPW
+XPW -> XPWH: OpenGL Function Calls
+XPWH --> XPW
+deactivate XPW
+XPW -> XPW: GenerateCigiResponsePacketMessages as SIMRESPKT
+XPW -> GEP: GEP_HandleSimulationResponseMessages(SIMRESPKT)
+activate GEP
+GEP -> GEP: Store SIMRESPKT as GEP.RESPONSES
+GEP --> XPW
+deactivate GEP
+XPW --> XPWH
+deactivate XPW
+deactivate XPWH
+
+...
+
+XPWH -> XPWH: Execute Flight Loop
+activate XPWH
+
+XPWH -> XPW: FlightLoopCallback
+activate XPW
+XPW -> XPW: GEP_GenerateCigSimulationControlMessages as SIMRESPKT
+activate XPW
+XPW -> XPWH: api_hooks.XPLMCamera.XPLMReadCameraPosition
+activate XPWH
+XPWH --> XPW: CAMPOS
+deactivate XPWH
+XPW -> XPW: GenerateEntityPosition(CAMPOS)
+activate XPW
+XPW --> XPW: CIGI Entity Position as EPOSMSG
+deactivate XPW
+XPW -> XPW: GenerateViewControl()
+activate XPW
+XPW --> XPW: CIGI View Control as VCMSG
+deactivate XPW
+
+XPW -> GEP: HandleSimulationControlMessages({EPOSMSG, VCMSG} as SIMCTRLPKT)
+activate GEP
+GEP -> GEP: Add/Remove/Update messages in SIMCTRLPKT
+GEP --> XPW
+deactivate GEP
+XPW -> XPW: Store SIMCTRLPKT Symbology Messages as SYMBOLS
+XPW --> XPWH
+deactivate XPW
+deactivate XPWH
+
+end
+
+@enduml

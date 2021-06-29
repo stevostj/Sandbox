@@ -21,8 +21,19 @@ HAI -> GEP: GEP_Initialize
 activate GEP
 GEP --> HAI: initialization_ok = 0
 deactivate GEP
+...
 
-
+loop Repeat Every Frame Period
+HAI -> GEP: GEP_HandleSimulationReponseMessages
+activate GEP
+GEP --> HAI: handled_ok = 0
+deactivate GEP
+... delays ...
+HAI -> GEP: GEP_HandleSimulationControlMessages
+activate GEP
+GEP --> HAI: handled_ok = 0
+deactivate GEP
+end
 
 
 

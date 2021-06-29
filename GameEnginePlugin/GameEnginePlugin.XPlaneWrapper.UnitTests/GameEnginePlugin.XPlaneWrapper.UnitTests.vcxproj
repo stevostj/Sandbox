@@ -36,15 +36,25 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
+    <ClInclude Include="gep_proxy.h" />
+    <ClInclude Include="helper_methods.h" />
+    <ClInclude Include="xplmcamera_proxy.h" />
     <ClInclude Include="xplmdisplay_proxy.h" />
     <ClInclude Include="xplmgraphics_proxy.h" />
     <ClInclude Include="xplmprocessing_proxy.h" />
+    <ClInclude Include="xplugin_test_fixture.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test_xpluginstart.cpp" />
+    <ClCompile Include="gep_proxy.cpp" />
+    <ClCompile Include="helper_methods.cpp" />
+    <ClCompile Include="test_symbology_rendering.cpp" />
+    <ClCompile Include="test_xplugin_flightloopcallback.cpp" />
+    <ClCompile Include="test_xplugin_drawcallback.cpp" />
     <ClCompile Include="xlmprocessing_proxy.cpp" />
+    <ClCompile Include="xplmcamera_proxy.cpp" />
     <ClCompile Include="xplmdisplay_proxy.cpp" />
     <ClCompile Include="xplmgraphics_proxy.cpp" />
+    <ClCompile Include="xplugin_test_fixture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -34,8 +34,11 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="plugin_test_fixture.h" />
+    <ClInclude Include="test_handle_simulation_control_messages.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="plugin_test_fixture.cpp" />
     <ClCompile Include="test._initialize.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -76,6 +79,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>..\GameEnginePlugin.Shared;$(MSBuildThisFileDirectory)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
